@@ -30,7 +30,7 @@ model Person {
   lengthOfHair Int?
   colorOfEyes  String?         @db.VarChar(255)
   colorOfHair  String?         @db.VarChar(255)
-  role         Person_role
+  role         PersonRole
   dateOfBirth  DateTime?       @db.Date
   filmography  Filmography[]
   awards       PersonAwards[]
@@ -88,7 +88,7 @@ model PersonSckills {
   @@index([personId], map: "personId")
 }
 
-enum Person_role {
+enum PersonRole {
   PRODUCTION_DESIGNER
   EXECUTIVE_PRODUCER
   DIRECTOR
