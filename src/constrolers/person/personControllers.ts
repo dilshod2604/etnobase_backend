@@ -13,8 +13,8 @@ export const createPerson = async (
   try {
     const personExist = await prisma.person.findFirst({
       where: {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        firstName: data.firstName as string,
+        lastName: data.lastName as string,
       },
     });
     if (personExist) {
