@@ -11,17 +11,17 @@ export const createPerson = async (
 ) => {
   const data = req.body;
   try {
-    const personExist = await prisma.person.findFirst({
-      where: {
-        firstName: data.firstName!,
-        lastName: data.lastName!,
-      },
-    });
-    if (personExist) {
-      reply.status(400).send({
-        message: `${personExist.firstName} ${personExist.lastName} уже существует`,
-      });
-    }
+    // const personExist = await prisma.person.findFirst({
+    //   where: {
+    //     firstName: data.firstName!,
+    //     lastName: data.lastName!,
+    //   },
+    // });
+    // if (personExist) {
+    //   reply.status(400).send({
+    //     message: `${personExist.firstName} ${personExist.lastName} уже существует`,
+    //   });
+    // }
     const person = await prisma.person.create({
       data: data,
     });
