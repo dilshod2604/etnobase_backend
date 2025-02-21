@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Filmography {
+  id          Int     @id @default(autoincrement())
+  personId    Int
+  releaseYear Int
+  movieName   String  @db.VarChar(255)
+  role        String? @db.VarChar(255)
+  Person      Person  @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "Filmography_ibfk_1")
+
+  @@index([personId], map: "userId")
+}
+
+model Person {
+  id           Int             @id @default(autoincrement())
+  lastName     String          @db.VarChar(255)
+  firstName    String          @db.VarChar(255)
+  cityOfLive   String          @db.VarChar(255)
+  citizenship  String          @db.VarChar(255)
+  education    String?         @db.VarChar(255)
+  height       Int?
+  weight       Int?
+  lengthOfHair Int?
+  colorOfEyes  String?         @db.VarChar(255)
+  colorOfHair  String?         @db.VarChar(255)
+  role         Person_role
+  dateOfBirth  DateTime?       @db.Date
+  filmography  Filmography[]
+  awards       PersonAwards[]
+  image        PersonImage[]
+  sckills      PersonSckills[]
+  video        PersonVideo[]
+  theater      theater[]
+}
+
+model PersonImage {
+  id       Int    @id @default(autoincrement())
+  personId Int
+  src      String @db.VarChar(255)
+  Person   Person @relation(fields: [personId], references: [id], onDelete: Cascade, map: "PersonImage_ibfk_1")
+
+  @@index([personId], map: "userId")
+}
+
+model PersonVideo {
+  id       Int    @id @default(autoincrement())
+  personId Int
+  src      String @db.VarChar(255)
+  Person   Person @relation(fields: [personId], references: [id], onDelete: Cascade, map: "PersonVideo_ibfk_1")
+
+  @@index([personId], map: "userId")
+}
+
+model theater {
+  id          Int     @id @default(autoincrement())
+  personId    Int
+  name        String  @db.VarChar(255)
+  description String? @db.VarChar(255)
+  Person      Person  @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "theater_ibfk_1")
+
+  @@index([personId], map: "personId")
+}
+
+model PersonAwards {
+  id       Int    @id @default(autoincrement())
+  personId Int
+  name     String @db.VarChar(255)
+  value    String @db.VarChar(255)
+  Person   Person @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "PersonAwards_ibfk_1")
+
+  @@index([personId], map: "personId")
+}
+
+model PersonSckills {
+  id       Int    @id @default(autoincrement())
+  personId Int
+  name     String @db.VarChar(255)
+  value    String @db.VarChar(255)
+  Person   Person @relation(fields: [personId], references: [id], onDelete: Cascade, map: "PersonSckills_ibfk_1")
+
+  @@index([personId], map: "personId")
+}
+
+enum Person_role {
+  PRODUCTION_DESIGNER
+  EXECUTIVE_PRODUCER
+  DIRECTOR
+  DIRECTOR_OF_PHOTOGRAPHY
+  ACTORS
+  SOUND_DESIGNER
+  EDITOR
+  GAFFER
+  AMATEUR
+  LINE_PRODUCER
+  ASSISTANT_DIRECTOR
+  COSTUME_DESIGNER
+  CAMERA_OPERATOR
+  STUNT_PERFORMERS
+  COMPOSER
+  GRIP
+  ASSISTANT_EDITOR
+  PROFESSIONAL
+  SOUND_OPERATOR
+  SECOND_UNIT_DIRECTOR
+  MAKEUP_ARTIST
+  STEADICAM_OPERATOR
+  STUNT_DOUBLE
+  COLORIST
+  ASSISTANTS
+  EDITORS_DIRECTOR
+  CAMERA_ASSISTANT
+  TRANSPORTATION_COORDINATOR
+  EXTRA_CROWD
+  DRONE_OPERATOR
+}

@@ -1,0 +1,32 @@
+import { buildJsonSchemas } from "fastify-zod";
+import { z } from "zod";
+
+const personImageSchema = z.object({
+  personId: z.number().int(),
+  src: z.string(),
+});
+
+const createPersonImageSchema = personImageSchema;
+const updatePersonImageSchema = personImageSchema.omit({ personId: true });
+export const personImageResponse = personImageSchema.extend({
+  id: z.number().int(),
+});
+
+const personImageParamsSchema = z.object({
+  id: z.number().int(),
+});
+
+export type CreatePersonImageSchemaInput = z.infer<typeof personImageSchema>;
+export type UpdatePersonImageSchemaInput = z.infer<
+  typeof updatePersonImageSchema
+>;
+
+export const { schemas: PersonImageScheme, $ref } = buildJsonSchemas(
+  {
+    createPersonImageSchema,
+    updatePersonImageSchema,
+    personImageResponse,
+    personImageParamsSchema,
+  },
+  { $id: "PersonImage" }
+);
