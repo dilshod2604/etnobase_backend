@@ -1,4 +1,3 @@
-import { PersonSckills } from "./../../node_modules/.pnpm/@prisma+client@6.3.1_typescript@5.7.3/node_modules/.prisma/client/index.d";
 import fp from "fastify-plugin";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
