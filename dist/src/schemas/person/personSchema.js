@@ -27,6 +27,7 @@ const PersonScheme = zod_1.default.object({
     colorOfEyes: zod_1.default.string().min(2).max(255).optional().nullable(),
     colorOfHair: zod_1.default.string().min(2).max(255).optional().nullable(),
     role: zod_1.default.nativeEnum(client_1.PersonRole),
+    avatar: zod_1.default.string().min(2).max(255).optional()
 });
 //create
 const aditionalPersonSchema = zod_1.default.object({
