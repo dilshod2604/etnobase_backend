@@ -17,7 +17,7 @@ const personTheatreSchema_1 = require("./theatre/personTheatreSchema");
 const PersonScheme = zod_1.default.object({
     firstName: zod_1.default.string().min(2).max(255),
     lastName: zod_1.default.string().min(2).max(255),
-    dateOfBirth: zod_1.default.date().optional().nullable(),
+    dateOfBirth: zod_1.default.string().optional().nullable(),
     cityOfLive: zod_1.default.string().min(2).max(255),
     citizenship: zod_1.default.string().min(2).max(255),
     education: zod_1.default.string().min(2).max(255).optional().nullable(),
@@ -27,7 +27,7 @@ const PersonScheme = zod_1.default.object({
     colorOfEyes: zod_1.default.string().min(2).max(255).optional().nullable(),
     colorOfHair: zod_1.default.string().min(2).max(255).optional().nullable(),
     role: zod_1.default.nativeEnum(client_1.PersonRole),
-    avatar: zod_1.default.string().min(2).max(255).optional()
+    avatar: zod_1.default.string().min(2).max(255).optional(),
 });
 //create
 const aditionalPersonSchema = zod_1.default.object({

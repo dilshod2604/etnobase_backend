@@ -21,7 +21,7 @@ const PersonScheme = z.object({
   colorOfEyes: z.string().min(2).max(255).optional().nullable(),
   colorOfHair: z.string().min(2).max(255).optional().nullable(),
   role: z.nativeEnum(PersonRole),
-  avatar:z.string().min(2).max(255).optional()
+  avatar: z.string().min(2).max(255).optional(),
 });
 //create
 
