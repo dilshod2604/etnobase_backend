@@ -31,7 +31,7 @@ model Person {
   colorOfEyes  String?         @db.VarChar(255)
   colorOfHair  String?         @db.VarChar(255)
   role         PersonRole
-  dateOfBirth  DateTime?       @db.Date
+  dateOfBirth  String?         @db.VarChar(255)
   avatar       String?         @db.VarChar(255)
   filmography  Filmography[]
   awards       PersonAwards[]
