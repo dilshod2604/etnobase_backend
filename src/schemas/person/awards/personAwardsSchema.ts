@@ -7,6 +7,7 @@ const personAwardsSchema = z.object({
   value: z.string().min(2).max(255),
 });
 
+
 const createPersonAwardsSchema = personAwardsSchema;
 export const personAwardsSchemaResponse = personAwardsSchema.extend({
   id: z.number().int(),
