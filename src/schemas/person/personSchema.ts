@@ -11,7 +11,7 @@ import { personTheatreSchemaResponse } from "./theatre/personTheatreSchema";
 const PersonScheme = z.object({
   firstName: z.string().min(2).max(255),
   lastName: z.string().min(2).max(255),
-  dateOfBirth: z.date().optional().nullable(),
+  dateOfBirth: z.string().optional().nullable(),
   cityOfLive: z.string().min(2).max(255),
   citizenship: z.string().min(2).max(255),
   education: z.string().min(2).max(255).optional().nullable(),
