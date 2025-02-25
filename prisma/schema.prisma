@@ -33,6 +33,7 @@ model Person {
   role         PersonRole
   dateOfBirth  String?         @db.VarChar(255)
   avatar       String?         @db.VarChar(255)
+  person_type  Person_type?
   filmography  Filmography[]
   awards       PersonAwards[]
   image        PersonImage[]
@@ -89,6 +90,11 @@ model PersonSckills {
   @@index([personId], map: "personId")
 }
 
+enum Person_type {
+  AMATEUR
+  PROFESSIONAL
+}
+
 enum PersonRole {
   PRODUCTION_DESIGNER
   EXECUTIVE_PRODUCER
@@ -98,7 +104,6 @@ enum PersonRole {
   SOUND_DESIGNER
   EDITOR
   GAFFER
-  AMATEUR
   LINE_PRODUCER
   ASSISTANT_DIRECTOR
   COSTUME_DESIGNER
@@ -107,7 +112,6 @@ enum PersonRole {
   COMPOSER
   GRIP
   ASSISTANT_EDITOR
-  PROFESSIONAL
   SOUND_OPERATOR
   SECOND_UNIT_DIRECTOR
   MAKEUP_ARTIST

@@ -1,6 +1,7 @@
 import z from "zod";
 import { buildJsonSchemas } from "fastify-zod";
-import { PersonRole } from "@prisma/client";
+import {PersonRole ,Person_type } from "@prisma/client";
+
 import { filmographySchemaResponse } from "./filmography/personFilmography.schema";
 import { personAwardsSchemaResponse } from "./awards/personAwardsSchema";
 import { personImageResponse } from "./image/personImage";
@@ -21,6 +22,7 @@ const PersonScheme = z.object({
   colorOfEyes: z.string().min(2).max(255).optional().nullable(),
   colorOfHair: z.string().min(2).max(255).optional().nullable(),
   role: z.nativeEnum(PersonRole),
+  person_type: z.nativeEnum(Person_type),
   avatar: z.string().min(2).max(255).optional(),
 });
 //create

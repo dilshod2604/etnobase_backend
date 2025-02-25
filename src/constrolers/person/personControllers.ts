@@ -4,6 +4,9 @@ import {
   CreatePersonInput,
   UpdatePerssonInput,
 } from "../../schemas/person/personSchema";
+import { buildFilters } from "../../utils/buildFIlters";
+import { filterByName } from "../../filters/personFilters/personFIlter";
+import { PersonQuery } from "../../types/types";
 
 export const createPerson = async (
   req: FastifyRequest<{ Body: CreatePersonInput }>,
@@ -35,11 +38,20 @@ export const createPerson = async (
 };
 
 export const fetchPersons = async (
-  req: FastifyRequest,
+  req: FastifyRequest<{ Querystring: PersonQuery }>,
   reply: FastifyReply
 ) => {
+  const { name } = req.query;
+
+  const filter = buildFilters([filterByName], {
+    name,
+  });
+
   try {
-    const persons = await prisma.person.findMany();
+    const persons = await prisma.person.findMany({
+      where: filter,
+    });
+
     if (!persons || persons.length === 0) {
       return reply.status(404).send({
         message: "Пользователи не найдены",
@@ -55,7 +67,7 @@ export const fetchPersons = async (
 };
 
 export const fetchPersonById = async (
-  req: FastifyRequest<{ Params: { id: string } }>,
+  req: FastifyRequest<{ Params: { id: number } }>,
   reply: FastifyReply
 ) => {
   const { id } = req.params;
@@ -65,7 +77,7 @@ export const fetchPersonById = async (
     }
     const person = await prisma.person.findFirst({
       where: {
-        id: parseInt(id, 10),
+        id: id,
       },
       include: {
         awards: true,
@@ -90,7 +102,7 @@ export const fetchPersonById = async (
 };
 
 export const updatePerson = async (
-  req: FastifyRequest<{ Params: { id: string }; Body: UpdatePerssonInput }>,
+  req: FastifyRequest<{ Params: { id: number }; Body: UpdatePerssonInput }>,
   reply: FastifyReply
 ) => {
   const data = req.body;
@@ -104,7 +116,7 @@ export const updatePerson = async (
     }
     const person = await prisma.person.update({
       where: {
-        id: parseInt(id, 10),
+        id: id,
       },
       data: data,
     });
@@ -116,7 +128,7 @@ export const updatePerson = async (
 };
 
 export const deletePerson = async (
-  req: FastifyRequest<{ Params: { id: string } }>,
+  req: FastifyRequest<{ Params: { id: number } }>,
   reply: FastifyReply
 ) => {
   const { id } = req.params;
@@ -127,7 +139,7 @@ export const deletePerson = async (
 
     const person = await prisma.person.delete({
       where: {
-        id: parseInt(id, 10),
+        id: id,
       },
     });
     reply.status(200).send(person);

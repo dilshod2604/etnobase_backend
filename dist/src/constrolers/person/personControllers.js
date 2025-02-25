@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePerson = exports.updatePerson = exports.fetchPersonById = exports.fetchPersons = exports.createPerson = void 0;
 const prisma_1 = require("../../utils/prisma");
+const buildFIlters_1 = require("../../utils/buildFIlters");
+const personFIlter_1 = require("../../filters/personFilters/personFIlter");
 const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     try {
@@ -39,8 +41,14 @@ const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.createPerson = createPerson;
 const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name } = req.query;
+    const filter = (0, buildFIlters_1.buildFilters)([personFIlter_1.filterByName], {
+        name,
+    });
     try {
-        const persons = yield prisma_1.prisma.person.findMany();
+        const persons = yield prisma_1.prisma.person.findMany({
+            where: filter,
+        });
         if (!persons || persons.length === 0) {
             return reply.status(404).send({
                 message: "Пользователи не найдены",
@@ -64,7 +72,7 @@ const fetchPersonById = (req, reply) => __awaiter(void 0, void 0, void 0, functi
         }
         const person = yield prisma_1.prisma.person.findFirst({
             where: {
-                id: parseInt(id, 10),
+                id: id,
             },
             include: {
                 awards: true,
@@ -100,7 +108,7 @@ const updatePerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         }
         const person = yield prisma_1.prisma.person.update({
             where: {
-                id: parseInt(id, 10),
+                id: id,
             },
             data: data,
         });
@@ -120,7 +128,7 @@ const deletePerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         }
         const person = yield prisma_1.prisma.person.delete({
             where: {
-                id: parseInt(id, 10),
+                id: id,
             },
         });
         reply.status(200).send(person);
