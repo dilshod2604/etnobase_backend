@@ -21,7 +21,7 @@ export const uploadAwatar = async (
     
 
     const fileUrl = await uploadFile(file, uploadPath,);
-    reply.status(200).send({ path: fileUrl });
+    reply.status(200).send({ url: fileUrl });
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при загрузке файла", error });

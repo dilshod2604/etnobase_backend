@@ -2,7 +2,7 @@ import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
 
 const personAvatarSchema = z.object({
-  path: z.string(),
+  url: z.string(),
 });
 
 const personAvatarsResponse = personAvatarSchema;
