@@ -9,6 +9,7 @@ import { PersonVideoScheme } from "../schemas/person/video/personVideo.scema";
 import { PersonsSckillsSchema } from "../schemas/person/sckills/personSckillsSchema";
 import { PersonsAwardsSchema } from "../schemas/person/awards/personAwardsSchema";
 import { PersonsTheatreSchema } from "../schemas/person/theatre/personTheatreSchema";
+import { PersonAvatarSchema } from "../schemas/person/avatars/personsAvatarSchema";
 
 export default fp(async (fastify: FastifyInstance) => {
   const schemas = [
@@ -19,6 +20,7 @@ export default fp(async (fastify: FastifyInstance) => {
     ...PersonsSckillsSchema,
     ...PersonsAwardsSchema,
     ...PersonsTheatreSchema,
+    ...PersonAvatarSchema,
   ];
 
   schemas.forEach((schema) => {
