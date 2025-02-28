@@ -41,9 +41,9 @@ const uploadFile = (file, uploadPath) => __awaiter(void 0, void 0, void 0, funct
         const relativePath = path_1.default
             .relative(path_1.default.resolve("public"), fileSavePath)
             .replace(/\\/g, "/");
-        if (!relativePath.startsWith("images/")) {
-            throw new Error("Недопустимый путь сохранения");
-        }
+        // if (!relativePath.startsWith("images/")) {
+        //   throw new Error("Недопустимый путь сохранения");
+        // }
         return `${url}/${relativePath}`;
     }
     catch (error) {

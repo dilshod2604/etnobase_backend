@@ -35,10 +35,6 @@ export const uploadFile = async (file: any, uploadPath: string) => {
       .relative(path.resolve("public"), fileSavePath)
       .replace(/\\/g, "/");
 
-    if (!relativePath.startsWith("images/")) {
-      throw new Error("Недопустимый путь сохранения");
-    }
-
     return `${url}/${relativePath}`;
   } catch (error) {
     console.error(error);
