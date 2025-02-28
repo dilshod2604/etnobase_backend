@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { uploadFile } from "../../utils/uploadFile";
+import path from "path";
 
 export const uploadAwatar = async (
   req: FastifyRequest,
@@ -7,6 +8,7 @@ export const uploadAwatar = async (
 ) => {
   try {
     const file = await req.file();
+
     if (!file) {
       return reply.status(400).send({ message: "Файл не загружен" });
     }
