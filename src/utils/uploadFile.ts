@@ -12,7 +12,7 @@ interface uploadFileProps {
   uploadPath: string;
 }
 export const uploadFile = async ({ file, uploadPath }: uploadFileProps) => {
-  const dirname = path.resolve("public");
+  const dirname = path.join(__dirname, "../../", "public");
   try {
     if (!file) {
       throw new Error("Файл не загружен");
@@ -50,7 +50,8 @@ export const uploadFiles = async ({
   uploadPath: string;
 }) => {
   const fileUrls: string[] = [];
-  const dirname = path.resolve("public");
+  const dirname = path.join(__dirname, "../../", "public");
+  console.log("dirname", dirname);
   try {
     for await (let file of files) {
       if (!file) {

@@ -28,7 +28,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const pump = (0, util_1.promisify)(stream_1.pipeline);
 const url = process.env.APP_URL;
 const uploadFile = (_a) => __awaiter(void 0, [_a], void 0, function* ({ file, uploadPath }) {
-    const dirname = path_1.default.resolve("public");
+    const dirname = path_1.default.join(__dirname, "../../", "public");
     try {
         if (!file) {
             throw new Error("Файл не загружен");
@@ -59,7 +59,8 @@ const uploadFiles = (_a) => __awaiter(void 0, [_a], void 0, function* ({ files, 
     var _b, files_1, files_1_1;
     var _c, e_1, _d, _e;
     const fileUrls = [];
-    const dirname = path_1.default.resolve("public");
+    const dirname = path_1.default.join(__dirname, "../../", "public");
+    console.log("dirname", dirname);
     try {
         try {
             for (_b = true, files_1 = __asyncValues(files); files_1_1 = yield files_1.next(), _c = files_1_1.done, !_c; _b = true) {
