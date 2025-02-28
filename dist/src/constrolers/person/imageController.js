@@ -12,12 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteImage = exports.updateImage = exports.createImage = void 0;
 const prisma_1 = require("../../utils/prisma");
 const createImage = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = req.body;
+    const { personId, urls } = req.body;
     try {
-        const image = yield prisma_1.prisma.personImage.create({
-            data: data,
+        if (!urls || urls.length === 0) {
+            return reply.status(400).send({ message: "Нет загруженных изображений" });
+        }
+        const imageData = urls.map((url) => ({
+            personId,
+            src: url,
+        }));
+        const images = yield prisma_1.prisma.personImage.createMany({
+            data: imageData,
         });
-        reply.status(201).send(image);
+        reply.status(201).send(images);
     }
     catch (error) {
         console.error(error);

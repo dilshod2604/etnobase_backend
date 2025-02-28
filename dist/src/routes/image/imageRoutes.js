@@ -20,7 +20,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         schema: {
             body: (0, personImage_1.$ref)("createPersonImageSchema"),
             response: {
-                201: (0, personImage_1.$ref)("personImageResponse"),
+                201: (0, personImage_1.$ref)("createPersonImageResponse"),
             },
         },
     }, imageController_1.createImage);
