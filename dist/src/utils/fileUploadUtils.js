@@ -17,6 +17,7 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const stream_1 = require("stream");
 const util_1 = require("util");
+const crypto_1 = __importDefault(require("crypto"));
 const pump = (0, util_1.promisify)(stream_1.pipeline);
 const url = process.env.APP_URL || "http://localhost:8000";
 const uploadFile = (file, uploadPath) => __awaiter(void 0, void 0, void 0, function* () {
@@ -24,16 +25,26 @@ const uploadFile = (file, uploadPath) => __awaiter(void 0, void 0, void 0, funct
         if (!file) {
             throw new Error("Файл не загружен");
         }
-        const fileExt = file.filename.split(".").pop();
-        const fileName = `file_${Date.now()}.${fileExt}`;
+        const fileExt = path_1.default.extname(file.filename).slice(1) || "png";
+        const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+        if (!allowedTypes.includes(file.mimetype)) {
+            throw new Error("Недопустимый тип файла");
+        }
+        const randomString = crypto_1.default.randomBytes(8).toString("hex");
+        const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
         const fileSavePath = path_1.default.join(uploadPath, fileName);
         const dir = path_1.default.dirname(fileSavePath);
-        if (!fs_1.default.existsSync(dir)) {
+        if (!fs_1.default.existsSync(dir) || !fs_1.default.lstatSync(dir).isDirectory()) {
             fs_1.default.mkdirSync(dir, { recursive: true });
         }
         yield pump(file.file, fs_1.default.createWriteStream(fileSavePath));
-        const relativePath = path_1.default.relative(path_1.default.resolve("public"), fileSavePath);
-        return `${url}/${relativePath.replace(/\\/g, "/")}`;
+        const relativePath = path_1.default
+            .relative(path_1.default.resolve("public"), fileSavePath)
+            .replace(/\\/g, "/");
+        if (!relativePath.startsWith("images/")) {
+            throw new Error("Недопустимый путь сохранения");
+        }
+        return `${url}/${relativePath}`;
     }
     catch (error) {
         console.error(error);

@@ -23,7 +23,7 @@ const uploadAwatar = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         }
         const uploadPath = path_1.default.join(__dirname, "../../../", "public/images/avatars");
         const fileUrl = yield (0, fileUploadUtils_1.uploadFile)(file, uploadPath);
-        reply.status(200).send({ avatar: fileUrl });
+        reply.status(200).send({ url: fileUrl });
     }
     catch (error) {
         console.error(error);
