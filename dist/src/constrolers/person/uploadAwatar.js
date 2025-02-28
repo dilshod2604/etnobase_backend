@@ -10,14 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadAwatar = void 0;
-const fileUploadUtils_1 = require("../../utils/fileUploadUtils");
+const uploadFile_1 = require("../../utils/uploadFile");
 const uploadAwatar = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const file = yield req.file();
         if (!file) {
             return reply.status(400).send({ message: "Файл не загружен" });
         }
-        const fileUrl = yield (0, fileUploadUtils_1.uploadFile)({ file, uploadPath: "/images/avatars" });
+        const fileUrl = yield (0, uploadFile_1.uploadFile)({ file, uploadPath: "/images/avatars" });
         reply.status(200).send({ url: fileUrl });
     }
     catch (error) {

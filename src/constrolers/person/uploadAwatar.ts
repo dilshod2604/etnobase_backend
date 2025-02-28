@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import path from "path";
-import { uploadFile } from "../../utils/fileUploadUtils";
+import { uploadFile } from "../../utils/uploadFile";
 
 export const uploadAwatar = async (
   req: FastifyRequest,
@@ -8,12 +7,11 @@ export const uploadAwatar = async (
 ) => {
   try {
     const file = await req.file();
-
     if (!file) {
       return reply.status(400).send({ message: "Файл не загружен" });
     }
 
-    const fileUrl = await uploadFile({file,uploadPath:"/images/avatars"});
+    const fileUrl = await uploadFile({ file, uploadPath: "/images/avatars" });
     reply.status(200).send({ url: fileUrl });
   } catch (error) {
     console.error(error);

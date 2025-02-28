@@ -28,6 +28,7 @@ const PersonScheme = zod_1.default.object({
     colorOfHair: zod_1.default.string().min(2).max(255).optional().nullable(),
     role: zod_1.default.nativeEnum(client_1.PersonRole),
     person_type: zod_1.default.nativeEnum(client_1.Person_type),
+    sex: zod_1.default.nativeEnum(client_1.Person_sex),
     avatar: zod_1.default.string().min(2).max(255).optional(),
 });
 //create
