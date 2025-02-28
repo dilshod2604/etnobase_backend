@@ -1,6 +1,10 @@
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
-import { createImage, deleteImage, updateImage } from "../../constrolers/person/imageController";
+import {
+  createImage,
+  deleteImage,
+  updateImage,
+} from "../../constrolers/person/imageController";
 import { $ref } from "../../schemas/person/image/personImage";
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
@@ -9,7 +13,7 @@ export default fp(async (fastify: FastifyInstance) => {
       schema: {
         body: $ref("createPersonImageSchema"),
         response: {
-          201: $ref("personImageResponse"),
+          201: $ref("createPersonImageResponse"),
         },
       },
     },
@@ -19,7 +23,7 @@ export default fp(async (fastify: FastifyInstance) => {
     "/image/:id",
     {
       schema: {
-        params:$ref("personImageParamsSchema"),
+        params: $ref("personImageParamsSchema"),
         body: $ref("updatePersonImageSchema"),
         response: {
           200: $ref("personImageResponse"),
@@ -32,7 +36,7 @@ export default fp(async (fastify: FastifyInstance) => {
     "/image/:id",
     {
       schema: {
-        params:$ref("personImageParamsSchema"),
+        params: $ref("personImageParamsSchema"),
         response: {
           200: $ref("personImageResponse"),
         },

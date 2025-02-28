@@ -9,12 +9,21 @@ export const createImage = async (
   req: FastifyRequest<{ Body: CreatePersonImageSchemaInput }>,
   reply: FastifyReply
 ) => {
-  const data = req.body;
+  const { personId, urls } = req.body;
   try {
-    const image = await prisma.personImage.create({
-      data: data,
+    if (!urls || urls.length === 0) {
+      return reply.status(400).send({ message: "Нет загруженных изображений" });
+    }
+
+    const imageData = urls.map((url) => ({
+      personId,
+      src: url,
+    }));
+
+    const images = await prisma.personImage.createMany({
+      data: imageData,
     });
-    reply.status(201).send(image);
+    reply.status(201).send(images);
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при создании фото" });
