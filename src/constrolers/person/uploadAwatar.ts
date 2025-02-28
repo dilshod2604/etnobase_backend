@@ -13,14 +13,7 @@ export const uploadAwatar = async (
       return reply.status(400).send({ message: "Файл не загружен" });
     }
 
-    const uploadPath = path.join(
-      __dirname,
-      "../../../",
-      "public/images/avatars"
-    );
-    
-
-    const fileUrl = await uploadFile(file, uploadPath,);
+    const fileUrl = await uploadFile({file,uploadPath:"/images/avatars"});
     reply.status(200).send({ url: fileUrl });
   } catch (error) {
     console.error(error);

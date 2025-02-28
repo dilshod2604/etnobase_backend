@@ -5,9 +5,16 @@ import { promisify } from "util";
 import crypto from "crypto";
 
 const pump = promisify(pipeline);
-const url = process.env.APP_URL || "http://localhost:8000";
+const url = process.env.APP_URL
 
-export const uploadFile = async (file: any, uploadPath: string) => {
+export const uploadFile = async ({
+  file,
+  uploadPath,
+}: {
+  file: any;
+  uploadPath: string;
+}) => {
+  const dirname = path.join(__dirname, "../../", "public");
   try {
     if (!file) {
       throw new Error("Файл не загружен");
@@ -22,20 +29,15 @@ export const uploadFile = async (file: any, uploadPath: string) => {
 
     const randomString = crypto.randomBytes(8).toString("hex");
     const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
-    const fileSavePath = path.join(uploadPath, fileName);
+    const fileSavePath = path.join(`${dirname}${uploadPath}`, fileName);
 
     const dir = path.dirname(fileSavePath);
     if (!fs.existsSync(dir) || !fs.lstatSync(dir).isDirectory()) {
       fs.mkdirSync(dir, { recursive: true });
     }
-
     await pump(file.file, fs.createWriteStream(fileSavePath));
-
-    const relativePath = path
-      .relative(path.resolve("public"), fileSavePath)
-      .replace(/\\/g, "/");
-
-    return `${url}/${relativePath}`;
+    const fileUrl = `${url}${uploadPath}/${fileName}`;
+    return fileUrl;
   } catch (error) {
     console.error(error);
     throw new Error(`Ошибка при загрузке файла: ${error}`);

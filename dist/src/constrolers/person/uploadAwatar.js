@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadAwatar = void 0;
-const path_1 = __importDefault(require("path"));
 const fileUploadUtils_1 = require("../../utils/fileUploadUtils");
 const uploadAwatar = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -21,8 +17,7 @@ const uploadAwatar = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         if (!file) {
             return reply.status(400).send({ message: "Файл не загружен" });
         }
-        const uploadPath = path_1.default.join(__dirname, "../../../", "public/images/avatars");
-        const fileUrl = yield (0, fileUploadUtils_1.uploadFile)(file, uploadPath);
+        const fileUrl = yield (0, fileUploadUtils_1.uploadFile)({ file, uploadPath: "/images/avatars" });
         reply.status(200).send({ url: fileUrl });
     }
     catch (error) {
