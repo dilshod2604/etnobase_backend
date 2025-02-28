@@ -11,7 +11,7 @@ const createPersonImage = z.object({
   urls: z.array(z.string()),
 });
 
-const createPersonImageSchema = personImageSchema;
+const createPersonImageSchema = createPersonImage;
 const createPersonImageResponse = z.array(
   personImageSchema.extend({
     id: z.number().int(),

@@ -12,7 +12,7 @@ const createPersonImage = zod_1.z.object({
     personId: zod_1.z.number().int(),
     urls: zod_1.z.array(zod_1.z.string()),
 });
-const createPersonImageSchema = personImageSchema;
+const createPersonImageSchema = createPersonImage;
 const createPersonImageResponse = zod_1.z.array(personImageSchema.extend({
     id: zod_1.z.number().int(),
 }));
