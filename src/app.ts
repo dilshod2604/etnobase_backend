@@ -2,7 +2,7 @@ import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import AutoLoad from "@fastify/autoload";
 import path from "path";
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: true});
 
 app.register(AutoLoad, {
   dir: path.join(__dirname, "plugins"),

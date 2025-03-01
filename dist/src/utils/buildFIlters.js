@@ -5,7 +5,6 @@ const buildFilters = (filtersFunctions, query) => {
     if (!Array.isArray(filtersFunctions)) {
         throw new Error("filtersFunctions must be an array");
     }
-    console.log("query", query);
     let filters = {};
     filtersFunctions.forEach((filterFn) => {
         const filter = filterFn(query);

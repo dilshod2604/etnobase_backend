@@ -27,13 +27,20 @@ const util_1 = require("util");
 const crypto_1 = __importDefault(require("crypto"));
 const pump = (0, util_1.promisify)(stream_1.pipeline);
 const url = process.env.APP_URL;
+const ALLOWED_FILE_TYPES = {
+    video: ["video/mp4", "video/webm", "video/ogg", "video/quicktime"],
+    image: ["image/png", "image/jpeg", "image/jpg", "image/webp"],
+};
 const uploadFile = (_a) => __awaiter(void 0, [_a], void 0, function* ({ file, uploadPath }) {
     const dirname = path_1.default.join(__dirname, "../../", "public");
     try {
         if (!file) {
             throw new Error("Файл не загружен");
         }
-        const fileExt = path_1.default.extname(file.filename).slice(1) || "png";
+        const fileExt = path_1.default.extname(file.filename);
+        if (!fileExt) {
+            throw new Error("Файл не имеет расширения");
+        }
         const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
         if (!allowedTypes.includes(file.mimetype)) {
             throw new Error("Недопустимый тип файла");
@@ -55,12 +62,11 @@ const uploadFile = (_a) => __awaiter(void 0, [_a], void 0, function* ({ file, up
     }
 });
 exports.uploadFile = uploadFile;
-const uploadFiles = (_a) => __awaiter(void 0, [_a], void 0, function* ({ files, uploadPath, }) {
+const uploadFiles = (_a) => __awaiter(void 0, [_a], void 0, function* ({ files, uploadPath, type, }) {
     var _b, files_1, files_1_1;
     var _c, e_1, _d, _e;
     const fileUrls = [];
     const dirname = path_1.default.join(__dirname, "../../", "public");
-    console.log("dirname", dirname);
     try {
         try {
             for (_b = true, files_1 = __asyncValues(files); files_1_1 = yield files_1.next(), _c = files_1_1.done, !_c; _b = true) {
@@ -70,18 +76,15 @@ const uploadFiles = (_a) => __awaiter(void 0, [_a], void 0, function* ({ files, 
                 if (!file) {
                     throw new Error("Файл не загружен");
                 }
-                const fileExt = path_1.default.extname(file.filename).slice(1) || "png";
-                const allowedTypes = [
-                    "image/png",
-                    "image/jpeg",
-                    "image/jpg",
-                    "image/webp",
-                ];
-                if (!allowedTypes.includes(file.mimetype)) {
+                const fileExt = path_1.default.extname(file.filename);
+                if (!fileExt) {
+                    throw new Error("Файл не имеет расширения");
+                }
+                if (!ALLOWED_FILE_TYPES[type].includes(file.mimetype)) {
                     throw new Error("Недопустимый тип файла");
                 }
                 const randomString = crypto_1.default.randomBytes(8).toString("hex");
-                const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
+                const fileName = `${type}_${Date.now()}_${randomString}${fileExt}`;
                 const fileSavePath = path_1.default.join(`${dirname}${uploadPath}`, fileName);
                 const dir = path_1.default.dirname(fileSavePath);
                 if (!fs_1.default.existsSync(dir) || !fs_1.default.lstatSync(dir).isDirectory()) {

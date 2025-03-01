@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadImages = void 0;
+exports.uploadVideos = void 0;
 const uploadFile_1 = require("../../utils/uploadFile");
-const uploadImages = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+const uploadVideos = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const files = yield req.files();
         if (!files) {
@@ -19,8 +19,8 @@ const uploadImages = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         }
         const fileUrls = yield (0, uploadFile_1.uploadFiles)({
             files,
-            uploadPath: "/images/personImages",
-            type: "image",
+            uploadPath: "/videos/personVideos",
+            type: "video",
         });
         reply.status(200).send({
             message: "Файлы успешно загруженно",
@@ -32,4 +32,4 @@ const uploadImages = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         reply.status(500).send({ message: "Ошибка при загрузке файлаов", error });
     }
 });
-exports.uploadImages = uploadImages;
+exports.uploadVideos = uploadVideos;

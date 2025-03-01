@@ -9,8 +9,6 @@ export const buildFilters = (
   if (!Array.isArray(filtersFunctions)) {
     throw new Error("filtersFunctions must be an array");
   }
-
-  console.log("query", query);
   let filters: Prisma.PersonWhereInput = {};
 
   filtersFunctions.forEach((filterFn) => {

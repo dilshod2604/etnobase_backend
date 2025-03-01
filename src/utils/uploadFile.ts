@@ -11,6 +11,15 @@ interface uploadFileProps {
   file: any;
   uploadPath: string;
 }
+
+const ALLOWED_FILE_TYPES = {
+  video: ["video/mp4", "video/webm", "video/ogg", "video/quicktime"],
+  image: ["image/png", "image/jpeg", "image/jpg", "image/webp"],
+};
+
+
+type FileType = "image" | "video";
+
 export const uploadFile = async ({ file, uploadPath }: uploadFileProps) => {
   const dirname = path.join(__dirname, "../../", "public");
   try {
@@ -18,7 +27,10 @@ export const uploadFile = async ({ file, uploadPath }: uploadFileProps) => {
       throw new Error("Файл не загружен");
     }
 
-    const fileExt = path.extname(file.filename).slice(1) || "png";
+    const fileExt = path.extname(file.filename);
+    if (!fileExt) {
+      throw new Error("Файл не имеет расширения");
+    }
 
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
     if (!allowedTypes.includes(file.mimetype)) {
@@ -45,32 +57,30 @@ export const uploadFile = async ({ file, uploadPath }: uploadFileProps) => {
 export const uploadFiles = async ({
   files,
   uploadPath,
+  type,
 }: {
   files: AsyncIterable<any> | any[];
   uploadPath: string;
+  type: FileType;
 }) => {
   const fileUrls: string[] = [];
   const dirname = path.join(__dirname, "../../", "public");
-  console.log("dirname", dirname);
   try {
     for await (let file of files) {
       if (!file) {
         throw new Error("Файл не загружен");
       }
 
-      const fileExt = path.extname(file.filename).slice(1) || "png";
+      const fileExt = path.extname(file.filename);
+      if (!fileExt) {
+        throw new Error("Файл не имеет расширения");
+      }
 
-      const allowedTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/webp",
-      ];
-      if (!allowedTypes.includes(file.mimetype)) {
+      if (!ALLOWED_FILE_TYPES[type].includes(file.mimetype)) {
         throw new Error("Недопустимый тип файла");
       }
       const randomString = crypto.randomBytes(8).toString("hex");
-      const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
+      const fileName = `${type}_${Date.now()}_${randomString}${fileExt}`;
       const fileSavePath = path.join(`${dirname}${uploadPath}`, fileName);
 
       const dir = path.dirname(fileSavePath);
@@ -86,3 +96,4 @@ export const uploadFiles = async ({
     throw new Error(`Ошибка при загрузке файлов: ${error}`);
   }
 };
+

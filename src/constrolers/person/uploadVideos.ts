@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { uploadFiles } from "../../utils/uploadFile";
 
-export const uploadImages = async (
+export const uploadVideos = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
@@ -14,8 +14,8 @@ export const uploadImages = async (
 
     const fileUrls = await uploadFiles({
       files,
-      uploadPath: "/images/personImages",
-      type: "image",
+      uploadPath: "/videos/personVideos",
+      type: "video",
     });
     reply.status(200).send({
       message: "Файлы успешно загруженно",

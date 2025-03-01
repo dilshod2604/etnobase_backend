@@ -5,7 +5,10 @@ import {
   UpdatePerssonInput,
 } from "../../schemas/person/personSchema";
 import { buildFilters } from "../../utils/buildFIlters";
-import { filterByName } from "../../filters/personFilters/personFIlter";
+import {
+  filterByAge,
+  filterByName,
+} from "../../filters/personFilters/personFIlter";
 import { PersonQuery } from "../../types/types";
 
 export const createPerson = async (
@@ -41,12 +44,13 @@ export const fetchPersons = async (
   req: FastifyRequest<{ Querystring: PersonQuery }>,
   reply: FastifyReply
 ) => {
-  const { name } = req.query;
+  const { name, age } = req.query;
 
-  const filter = buildFilters([filterByName], {
+  const filter = buildFilters([filterByName, filterByAge], {
     name,
+    age: Number(age),
   });
-
+  console.log(filter);
   try {
     const persons = await prisma.person.findMany({
       where: filter,

@@ -24,6 +24,7 @@ const personAwardsSchema_1 = require("../schemas/person/awards/personAwardsSchem
 const personTheatreSchema_1 = require("../schemas/person/theatre/personTheatreSchema");
 const personsAvatarSchema_1 = require("../schemas/person/avatars/personsAvatarSchema");
 const uploadPersonImageSchema_1 = require("../schemas/person/image/uploadPersonImageSchema");
+const uploadPersonVideosSchema_1 = require("../schemas/person/video/uploadPersonVideosSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     const schemas = [
         ...personSchema_1.personSchema,
@@ -35,6 +36,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         ...personTheatreSchema_1.PersonsTheatreSchema,
         ...personsAvatarSchema_1.PersonAvatarSchema,
         ...uploadPersonImageSchema_1.uploadPersonImageSchema,
+        ...uploadPersonVideosSchema_1.uploadPersonVideosSchema,
     ];
     schemas.forEach((schema) => {
         if (!fastify.getSchema(schema.$id)) {
