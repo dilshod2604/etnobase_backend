@@ -1,6 +1,7 @@
 import { subYears } from "date-fns";
 
 export const calculateDateRangeForAge = (age: number) => {
+  
   if (typeof age !== 'number' || isNaN(age)) {
     throw new Error("Age must be a valid number");
   }

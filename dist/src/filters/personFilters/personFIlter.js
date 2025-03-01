@@ -4,7 +4,7 @@ exports.filterByAge = exports.filterByName = void 0;
 const calculateDateRangeForAge_1 = require("../../utils/calculateDateRangeForAge");
 const formatDate_1 = require("../../utils/formatDate");
 const filterByName = (query) => {
-    if (query) {
+    if (query.name) {
         return {
             firstName: {
                 contains: query.name,
@@ -15,7 +15,7 @@ const filterByName = (query) => {
 };
 exports.filterByName = filterByName;
 const filterByAge = (query) => {
-    if (query) {
+    if (query.age) {
         const { endOfAge, startOfAge } = (0, calculateDateRangeForAge_1.calculateDateRangeForAge)(query.age);
         const start = (0, formatDate_1.formatDateToString)(startOfAge);
         const end = (0, formatDate_1.formatDateToString)(endOfAge);

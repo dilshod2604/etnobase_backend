@@ -6,7 +6,7 @@ import { formatDateToString } from "../../utils/formatDate";
 export const filterByName = (
   query: PersonQuery
 ): Prisma.PersonWhereInput | null => {
-  if (query) {
+  if (query.name) {
     return {
       firstName: {
         contains: query.name,
@@ -19,9 +19,8 @@ export const filterByName = (
 export const filterByAge = (
   query: PersonQuery
 ): Prisma.PersonWhereInput | null => {
-  if (query) {
+  if (query.age) {
     const { endOfAge, startOfAge } = calculateDateRangeForAge(query.age!);
-
     const start = formatDateToString(startOfAge);
     const end = formatDateToString(endOfAge);
 
