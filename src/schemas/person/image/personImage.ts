@@ -18,7 +18,6 @@ const createPersonImageResponse = z.array(
   })
 );
 
-createPersonImageResponse
 const updatePersonImageSchema = personImageSchema.omit({ personId: true });
 export const personImageResponse = personImageSchema.extend({
   id: z.number().int(),

@@ -8,7 +8,14 @@ const personVideoSchema = zod_1.z.object({
     personId: zod_1.z.number().int(),
     src: zod_1.z.string(),
 });
-const createPersonVideoSchema = personVideoSchema;
+const createPersoVideo = zod_1.z.object({
+    personId: zod_1.z.number().int(),
+    urls: zod_1.z.array(zod_1.z.string()),
+});
+const createPersonVideoSchema = createPersoVideo;
+const createPersonVideoResponse = zod_1.z.array(personVideoSchema.extend({
+    id: zod_1.z.number().int(),
+}));
 const updatePersonVideoSchema = personVideoSchema.omit({ personId: true });
 exports.personVideoResponse = personVideoSchema.extend({
     id: zod_1.z.number().int(),
@@ -17,6 +24,7 @@ const personVideoParamsSchema = zod_1.z.object({
     id: zod_1.z.number().int(),
 });
 _a = (0, fastify_zod_1.buildJsonSchemas)({
+    createPersonVideoResponse,
     createPersonVideoSchema,
     updatePersonVideoSchema,
     personVideoResponse: exports.personVideoResponse,

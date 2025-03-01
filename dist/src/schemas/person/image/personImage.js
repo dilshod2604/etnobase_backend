@@ -16,7 +16,6 @@ const createPersonImageSchema = createPersonImage;
 const createPersonImageResponse = zod_1.z.array(personImageSchema.extend({
     id: zod_1.z.number().int(),
 }));
-createPersonImageResponse;
 const updatePersonImageSchema = personImageSchema.omit({ personId: true });
 exports.personImageResponse = personImageSchema.extend({
     id: zod_1.z.number().int(),

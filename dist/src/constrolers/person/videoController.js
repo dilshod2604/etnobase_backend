@@ -12,10 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteVideo = exports.updateVideo = exports.createVideo = void 0;
 const prisma_1 = require("../../utils/prisma");
 const createVideo = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = req.body;
+    const { personId, urls } = req.body;
     try {
-        const video = yield prisma_1.prisma.personVideo.create({
-            data: data,
+        if (!urls || urls.length === 0) {
+            return reply.status(400).send({ message: "Нет загруженных видео" });
+        }
+        const videoData = urls.map((url) => ({
+            personId,
+            src: url,
+        }));
+        const video = yield prisma_1.prisma.personVideo.createMany({
+            data: videoData,
         });
         reply.status(201).send(video);
     }

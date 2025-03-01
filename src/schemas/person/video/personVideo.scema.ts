@@ -6,7 +6,17 @@ const personVideoSchema = z.object({
   src: z.string(),
 });
 
-const createPersonVideoSchema = personVideoSchema;
+const createPersoVideo = z.object({
+  personId: z.number().int(),
+  urls: z.array(z.string()),
+});
+
+const createPersonVideoSchema = createPersoVideo;
+const createPersonVideoResponse = z.array(
+  personVideoSchema.extend({
+    id: z.number().int(),
+  })
+);
 const updatePersonVideoSchema = personVideoSchema.omit({ personId: true });
 export const personVideoResponse = personVideoSchema.extend({
   id: z.number().int(),
@@ -16,13 +26,14 @@ const personVideoParamsSchema = z.object({
   id: z.number().int(),
 });
 
-export type CreatePersonVideoSchemaInput = z.infer<typeof personVideoSchema>;
+export type CreatePersonVideoSchemaInput = z.infer<typeof createPersoVideo>;
 export type UpdatePersonVideoSchemaInput = z.infer<
   typeof updatePersonVideoSchema
 >;
 
 export const { schemas: PersonVideoScheme, $ref } = buildJsonSchemas(
   {
+    createPersonVideoResponse,
     createPersonVideoSchema,
     updatePersonVideoSchema,
     personVideoResponse,

@@ -7,10 +7,20 @@ export const createVideo = async (
   req: FastifyRequest<{ Body: CreatePersonVideoSchemaInput }>,
   reply: FastifyReply
 ) => {
-  const data = req.body;
+  const {personId,urls} = req.body;
   try {
-    const video = await prisma.personVideo.create({
-      data: data,
+    
+    if (!urls || urls.length === 0) {
+      return reply.status(400).send({ message: "Нет загруженных видео" });
+    }
+
+    const videoData = urls.map((url) => ({
+      personId,
+      src: url,
+    }));
+
+    const video = await prisma.personVideo.createMany({
+      data: videoData,
     });
     reply.status(201).send(video);
   } catch (error) {

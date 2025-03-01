@@ -14,7 +14,7 @@ export default fp(async (fastify: FastifyInstance) => {
       schema: {
         body: $ref("createPersonVideoSchema"),
         response: {
-          201: $ref("personVideoResponse"),
+          201: $ref("createPersonVideoResponse"),
         },
       },
     },

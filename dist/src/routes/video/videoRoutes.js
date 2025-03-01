@@ -20,7 +20,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         schema: {
             body: (0, personVideo_scema_1.$ref)("createPersonVideoSchema"),
             response: {
-                201: (0, personVideo_scema_1.$ref)("personVideoResponse"),
+                201: (0, personVideo_scema_1.$ref)("createPersonVideoResponse"),
             },
         },
     }, videoController_1.createVideo);
