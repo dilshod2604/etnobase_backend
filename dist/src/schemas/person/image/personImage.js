@@ -13,13 +13,13 @@ const createPersonImage = zod_1.z.object({
     urls: zod_1.z.array(zod_1.z.string()),
 });
 const createPersonImageSchema = createPersonImage;
-const createPersonImageResponse = zod_1.z.array(personImageSchema.extend({
+const createPersonImageResponse = zod_1.z.object({
+    message: zod_1.z.string(),
+});
+const updatePersonImageSchema = personImageSchema.omit({ personId: true });
+exports.personImageResponse = zod_1.z.array(personImageSchema.extend({
     id: zod_1.z.number().int(),
 }));
-const updatePersonImageSchema = personImageSchema.omit({ personId: true });
-exports.personImageResponse = personImageSchema.extend({
-    id: zod_1.z.number().int(),
-});
 const personImageParamsSchema = zod_1.z.object({
     id: zod_1.z.number().int(),
 });
@@ -28,5 +28,5 @@ _a = (0, fastify_zod_1.buildJsonSchemas)({
     updatePersonImageSchema,
     personImageResponse: exports.personImageResponse,
     personImageParamsSchema,
-    createPersonImageResponse
+    createPersonImageResponse,
 }, { $id: "PersonImage" }), exports.PersonImageScheme = _a.schemas, exports.$ref = _a.$ref;

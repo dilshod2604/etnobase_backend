@@ -13,6 +13,7 @@ exports.deleteImage = exports.updateImage = exports.createImage = void 0;
 const prisma_1 = require("../../utils/prisma");
 const createImage = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { personId, urls } = req.body;
+    console.log("urls", urls);
     try {
         if (!urls || urls.length === 0) {
             return reply.status(400).send({ message: "Нет загруженных изображений" });
@@ -21,10 +22,10 @@ const createImage = (req, reply) => __awaiter(void 0, void 0, void 0, function* 
             personId,
             src: url,
         }));
-        const images = yield prisma_1.prisma.personImage.createMany({
+        yield prisma_1.prisma.personImage.createMany({
             data: imageData,
         });
-        reply.status(201).send(images);
+        reply.status(201).send({ message: "Фотки создались успешно" });
     }
     catch (error) {
         console.error(error);

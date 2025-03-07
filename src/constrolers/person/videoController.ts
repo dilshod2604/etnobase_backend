@@ -19,10 +19,10 @@ export const createVideo = async (
       src: url,
     }));
 
-    const video = await prisma.personVideo.createMany({
+     await prisma.personVideo.createMany({
       data: videoData,
     });
-    reply.status(201).send(video);
+    reply.status(201).send({message:"Видео создалось успешно"})
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при создании видео" });

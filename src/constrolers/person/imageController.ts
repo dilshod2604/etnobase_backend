@@ -10,20 +10,19 @@ export const createImage = async (
   reply: FastifyReply
 ) => {
   const { personId, urls } = req.body;
+  console.log("urls", urls);
   try {
     if (!urls || urls.length === 0) {
       return reply.status(400).send({ message: "Нет загруженных изображений" });
     }
-
     const imageData = urls.map((url) => ({
       personId,
       src: url,
     }));
-
-    const images = await prisma.personImage.createMany({
+    await prisma.personImage.createMany({
       data: imageData,
     });
-    reply.status(201).send(images);
+    reply.status(201).send({message:"Фотки создались успешно"})
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при создании фото" });

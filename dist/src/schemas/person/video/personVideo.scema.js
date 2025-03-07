@@ -13,9 +13,9 @@ const createPersoVideo = zod_1.z.object({
     urls: zod_1.z.array(zod_1.z.string()),
 });
 const createPersonVideoSchema = createPersoVideo;
-const createPersonVideoResponse = zod_1.z.array(personVideoSchema.extend({
-    id: zod_1.z.number().int(),
-}));
+const createPersonVideoResponse = zod_1.z.object({
+    message: zod_1.z.string(),
+});
 const updatePersonVideoSchema = personVideoSchema.omit({ personId: true });
 exports.personVideoResponse = personVideoSchema.extend({
     id: zod_1.z.number().int(),

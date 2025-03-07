@@ -12,16 +12,18 @@ const createPersonImage = z.object({
 });
 
 const createPersonImageSchema = createPersonImage;
-const createPersonImageResponse = z.array(
+
+const createPersonImageResponse = z.object({
+  message: z.string(),
+})
+
+const updatePersonImageSchema = personImageSchema.omit({ personId: true });
+
+export const personImageResponse = z.array(
   personImageSchema.extend({
     id: z.number().int(),
   })
 );
-
-const updatePersonImageSchema = personImageSchema.omit({ personId: true });
-export const personImageResponse = personImageSchema.extend({
-  id: z.number().int(),
-});
 
 const personImageParamsSchema = z.object({
   id: z.number().int(),
@@ -38,7 +40,7 @@ export const { schemas: PersonImageScheme, $ref } = buildJsonSchemas(
     updatePersonImageSchema,
     personImageResponse,
     personImageParamsSchema,
-    createPersonImageResponse
+    createPersonImageResponse,
   },
   { $id: "PersonImage" }
 );

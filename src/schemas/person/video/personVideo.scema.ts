@@ -12,11 +12,10 @@ const createPersoVideo = z.object({
 });
 
 const createPersonVideoSchema = createPersoVideo;
-const createPersonVideoResponse = z.array(
-  personVideoSchema.extend({
-    id: z.number().int(),
-  })
-);
+const createPersonVideoResponse =  z.object({
+  message: z.string(),
+})
+
 const updatePersonVideoSchema = personVideoSchema.omit({ personId: true });
 export const personVideoResponse = personVideoSchema.extend({
   id: z.number().int(),

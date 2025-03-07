@@ -21,10 +21,10 @@ const createVideo = (req, reply) => __awaiter(void 0, void 0, void 0, function* 
             personId,
             src: url,
         }));
-        const video = yield prisma_1.prisma.personVideo.createMany({
+        yield prisma_1.prisma.personVideo.createMany({
             data: videoData,
         });
-        reply.status(201).send(video);
+        reply.status(201).send({ message: "Видео создалось успешно" });
     }
     catch (error) {
         console.error(error);
