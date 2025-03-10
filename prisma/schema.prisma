@@ -41,7 +41,7 @@ model Person {
   sckills      PersonSckills[]
   video        PersonVideo[]
   theater      theater[]
-  personUsers User[] @relation("UserPerson")
+  personUsers  User[]          @relation("UserPerson")
 }
 
 model PersonImage {
@@ -67,9 +67,9 @@ model theater {
   personId    Int
   name        String  @db.VarChar(255)
   description String? @db.VarChar(255)
-  Person      Person  @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "theater_ibfk_1")
+  Person      Person  @relation(fields: [personId], references: [id], onDelete: Cascade, map: "theater_ibfk_1")
 
-  @@index([personId], map: "personId")
+  @@index([personId], map: "theater_ibfk_1")
 }
 
 model PersonAwards {
@@ -93,12 +93,12 @@ model PersonSckills {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String?   @db.VarChar(255)
-  email    String    @db.VarChar(255)
-  password Int
-  role     User_role @default(USER)
-  userPersons Person[] @relation("UserPerson")
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(255)
+  email       String    @db.VarChar(255)
+  password    Int
+  role        User_role @default(USER)
+  userPersons Person[]  @relation("UserPerson")
 }
 
 enum Person_type {
