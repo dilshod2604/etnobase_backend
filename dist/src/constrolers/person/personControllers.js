@@ -85,6 +85,7 @@ const fetchPersonById = (req, reply) => __awaiter(void 0, void 0, void 0, functi
                 theater: true,
             },
         });
+        console.log(person);
         if (!person) {
             return reply.badRequest("Пользовател не найден");
         }

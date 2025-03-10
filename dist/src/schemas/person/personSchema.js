@@ -35,7 +35,7 @@ const PersonScheme = zod_1.default.object({
 const aditionalPersonSchema = zod_1.default.object({
     filmography: zod_1.default.array(personFilmography_schema_1.filmographySchemaResponse).optional(),
     awards: zod_1.default.array(personAwardsSchema_1.personAwardsSchemaResponse).optional(),
-    image: zod_1.default.array(personImage_1.personImageResponse).optional(),
+    image: personImage_1.personImageResponse.optional(),
     sckills: zod_1.default.array(personSckillsSchema_1.personSckillsSchemaResponse).optional(),
     video: zod_1.default.array(personVideo_scema_1.personVideoResponse).optional(),
     theater: zod_1.default.array(personTheatreSchema_1.personTheatreSchemaResponse).optional(),

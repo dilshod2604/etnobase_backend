@@ -31,7 +31,7 @@ const PersonScheme = z.object({
 const aditionalPersonSchema = z.object({
   filmography: z.array(filmographySchemaResponse).optional(),
   awards: z.array(personAwardsSchemaResponse).optional(),
-  image: z.array(personImageResponse).optional(),
+  image: personImageResponse.optional(),
   sckills: z.array(personSckillsSchemaResponse).optional(),
   video: z.array(personVideoResponse).optional(),
   theater: z.array(personTheatreSchemaResponse).optional(),

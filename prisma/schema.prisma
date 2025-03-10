@@ -13,9 +13,9 @@ model Filmography {
   releaseYear Int
   movieName   String  @db.VarChar(255)
   role        String? @db.VarChar(255)
-  Person      Person  @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "Filmography_ibfk_1")
+  Person      Person  @relation(fields: [personId], references: [id], onDelete: Cascade, map: "Filmography_ibfk_1")
 
-  @@index([personId], map: "userId")
+  @@index([personId], map: "Filmography_ibfk_1")
 }
 
 model Person {
@@ -76,9 +76,9 @@ model PersonAwards {
   personId Int
   name     String @db.VarChar(255)
   value    String @db.VarChar(255)
-  Person   Person @relation(fields: [personId], references: [id], onUpdate: Restrict, map: "PersonAwards_ibfk_1")
+  Person   Person @relation(fields: [personId], references: [id], onDelete: Cascade, map: "PersonAwards_ibfk_1")
 
-  @@index([personId], map: "personId")
+  @@index([personId], map: "PersonAwards_ibfk_1")
 }
 
 model PersonSckills {

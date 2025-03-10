@@ -22,7 +22,7 @@ export const createImage = async (
     await prisma.personImage.createMany({
       data: imageData,
     });
-    reply.status(201).send({message:"Фотки создались успешно"})
+    reply.status(201).send({ message: "Фотки создались успешно" });
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при создании фото" });

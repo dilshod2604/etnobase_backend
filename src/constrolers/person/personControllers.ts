@@ -93,6 +93,7 @@ export const fetchPersonById = async (
       },
     });
 
+    console.log(person);
     if (!person) {
       return reply.badRequest("Пользовател не найден");
     }
