@@ -41,6 +41,7 @@ model Person {
   sckills      PersonSckills[]
   video        PersonVideo[]
   theater      theater[]
+  personUsers User[] @relation("UserPerson")
 }
 
 model PersonImage {
@@ -91,6 +92,15 @@ model PersonSckills {
   @@index([personId], map: "personId")
 }
 
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String?   @db.VarChar(255)
+  email    String    @db.VarChar(255)
+  password Int
+  role     User_role @default(USER)
+  userPersons Person[] @relation("UserPerson")
+}
+
 enum Person_type {
   AMATEUR
   PROFESSIONAL
@@ -130,4 +140,9 @@ enum PersonRole {
 enum Person_sex {
   MALE
   FEMALE
+}
+
+enum User_role {
+  USER
+  ADMIN
 }

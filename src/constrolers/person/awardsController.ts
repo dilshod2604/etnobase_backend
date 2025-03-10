@@ -50,7 +50,7 @@ export const deleteAwards = async (
   reply: FastifyReply
 ) => {
   const { id } = req.params;
-  
+
   try {
     const awards = await prisma.personAwards.delete({
       where: {
