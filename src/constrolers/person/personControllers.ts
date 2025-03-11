@@ -16,6 +16,7 @@ export const createPerson = async (
   reply: FastifyReply
 ) => {
   const data = req.body;
+  const { roles, ...personData } = data;
   try {
     const personExist = await prisma.person.findFirst({
       where: {
@@ -24,14 +25,28 @@ export const createPerson = async (
       },
     });
     if (personExist) {
-      reply.status(400).send({
+      return reply.status(400).send({
         message: `${personExist.firstName} ${personExist.lastName} уже существует`,
       });
     }
     const person = await prisma.person.create({
-      data: data,
+      data: personData,
     });
-    reply.status(201).send(person);
+    if (roles.length > 0) {
+      await prisma.personRoleMapping.createMany({
+        data: roles.map((role) => ({
+          personId: person.id,
+          role: role.role,
+        })),
+      });
+    }
+    //временно
+    const personWithRoles = await prisma.person.findUnique({
+      where: { id: person.id },
+      include: { roles: true },
+    });
+
+    reply.status(201).send(personWithRoles);
   } catch (error) {
     console.error(error);
     reply
@@ -107,28 +122,54 @@ export const fetchPersonById = async (
 };
 
 export const updatePerson = async (
-  req: FastifyRequest<{ Params: { id: number }; Body: UpdatePerssonInput }>,
+  req: FastifyRequest<{ Params: { id: number }; Body: CreatePersonInput }>,
   reply: FastifyReply
 ) => {
-  const data = req.body;
   const { id } = req.params;
+  const data = req.body;
+  const { roles, ...personData } = data;
   try {
-    if (!id || isNaN(Number(id))) {
-      return reply.status(400).send({ message: "Id не существует" });
-    }
-    if (!data || Object.keys(data).length === 0) {
-      return reply.status(400).send({ message: "Нет данных для обновления" });
-    }
-    const person = await prisma.person.update({
-      where: {
-        id: id,
-      },
-      data: data,
+    const personExist = await prisma.person.findUnique({
+      where: { id },
     });
-    reply.status(200).send(person);
+
+    if (!personExist) {
+      return reply.status(404).send({
+        message: "Человек с таким ID не найден",
+      });
+    }
+
+    const result = await prisma.$transaction(async (prisma) => {
+      const person = await prisma.person.update({
+        where: { id },
+        data: personData,
+      });
+
+      await prisma.personRoleMapping.deleteMany({
+        where: { personId: id },
+      });
+
+      await prisma.personRoleMapping.createMany({
+        data: roles.map((role) => ({
+          personId: id,
+          role: role.role,
+        })),
+      });
+      //временно
+      const personWithRoles = await prisma.person.findUnique({
+        where: { id: person.id },
+        include: { roles: true },
+      });
+
+      return personWithRoles;
+    });
+
+    reply.status(200).send(result);
   } catch (error) {
     console.error(error);
-    reply.status(500).send({ message: "Ошибка при обновлении пользователя" });
+    reply
+      .status(500)
+      .send({ message: "Ошибка при обновлении Person", error: error });
   }
 };
 

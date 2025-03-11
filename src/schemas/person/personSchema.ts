@@ -21,14 +21,19 @@ const PersonScheme = z.object({
   lengthOfHair: z.number().optional().nullable(),
   colorOfEyes: z.string().min(2).max(255).optional().nullable(),
   colorOfHair: z.string().min(2).max(255).optional().nullable(),
-  role: z.nativeEnum(PersonRole),
   person_type: z.nativeEnum(Person_type),
   sex: z.nativeEnum(Person_sex),
   avatar: z.string().min(2).max(255).optional(),
 });
-//create
+
+const personRole = z.object({
+  id: z.number(),
+  personId: z.number().int(),
+  role: z.nativeEnum(PersonRole),
+});
 
 const aditionalPersonSchema = z.object({
+  roles: z.array(personRole).optional(),
   filmography: z.array(filmographySchemaResponse).optional(),
   awards: z.array(personAwardsSchemaResponse).optional(),
   image: personImageResponse.optional(),
@@ -37,16 +42,26 @@ const aditionalPersonSchema = z.object({
   theater: z.array(personTheatreSchemaResponse).optional(),
 });
 
-const createPersonSchema = PersonScheme;
-//fetch
+//createPerson
+const createPersonSchema = PersonScheme.extend({
+  roles: z.array(personRole.omit({ id: true, personId: true })),
+});
+
+//fechPersonResponse
 const personResponseSchema = PersonScheme.extend({
+  roles: z.array(personRole.omit({ id: true, personId: true })),
   id: z.number().int(),
 });
+
+//fetchManyPersonResonse
 const personsResponseSchema = z.array(personResponseSchema);
+
+//params
 const personParamsSchema = z.object({
   id: z.number().int(),
 });
-//fetchOnePerson
+
+//fetchOnePersonByIdResponse
 const onePersonResponseSchema = PersonScheme.merge(
   aditionalPersonSchema
 ).extend({

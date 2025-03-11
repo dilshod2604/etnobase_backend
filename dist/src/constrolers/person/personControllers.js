@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePerson = exports.updatePerson = exports.fetchPersonById = exports.fetchPersons = exports.createPerson = void 0;
 const prisma_1 = require("../../utils/prisma");
@@ -15,6 +26,7 @@ const buildFIlters_1 = require("../../utils/buildFIlters");
 const personFIlter_1 = require("../../filters/personFilters/personFIlter");
 const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
+    const { roles } = data, personData = __rest(data, ["roles"]);
     try {
         const personExist = yield prisma_1.prisma.person.findFirst({
             where: {
@@ -23,14 +35,27 @@ const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
             },
         });
         if (personExist) {
-            reply.status(400).send({
+            return reply.status(400).send({
                 message: `${personExist.firstName} ${personExist.lastName} уже существует`,
             });
         }
         const person = yield prisma_1.prisma.person.create({
-            data: data,
+            data: personData,
         });
-        reply.status(201).send(person);
+        if (roles.length > 0) {
+            yield prisma_1.prisma.personRoleMapping.createMany({
+                data: roles.map((role) => ({
+                    personId: person.id,
+                    role: role.role,
+                })),
+            });
+        }
+        //временно
+        const personWithRoles = yield prisma_1.prisma.person.findUnique({
+            where: { id: person.id },
+            include: { roles: true },
+        });
+        reply.status(201).send(personWithRoles);
     }
     catch (error) {
         console.error(error);
@@ -100,26 +125,46 @@ const fetchPersonById = (req, reply) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.fetchPersonById = fetchPersonById;
 const updatePerson = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = req.body;
     const { id } = req.params;
+    const data = req.body;
+    const { roles } = data, personData = __rest(data, ["roles"]);
     try {
-        if (!id || isNaN(Number(id))) {
-            return reply.status(400).send({ message: "Id не существует" });
-        }
-        if (!data || Object.keys(data).length === 0) {
-            return reply.status(400).send({ message: "Нет данных для обновления" });
-        }
-        const person = yield prisma_1.prisma.person.update({
-            where: {
-                id: id,
-            },
-            data: data,
+        const personExist = yield prisma_1.prisma.person.findUnique({
+            where: { id },
         });
-        reply.status(200).send(person);
+        if (!personExist) {
+            return reply.status(404).send({
+                message: "Человек с таким ID не найден",
+            });
+        }
+        const result = yield prisma_1.prisma.$transaction((prisma) => __awaiter(void 0, void 0, void 0, function* () {
+            const person = yield prisma.person.update({
+                where: { id },
+                data: personData,
+            });
+            yield prisma.personRoleMapping.deleteMany({
+                where: { personId: id },
+            });
+            yield prisma.personRoleMapping.createMany({
+                data: roles.map((role) => ({
+                    personId: id,
+                    role: role.role,
+                })),
+            });
+            //временно
+            const personWithRoles = yield prisma.person.findUnique({
+                where: { id: person.id },
+                include: { roles: true },
+            });
+            return personWithRoles;
+        }));
+        reply.status(200).send(result);
     }
     catch (error) {
         console.error(error);
-        reply.status(500).send({ message: "Ошибка при обновлении пользователя" });
+        reply
+            .status(500)
+            .send({ message: "Ошибка при обновлении Person", error: error });
     }
 });
 exports.updatePerson = updatePerson;

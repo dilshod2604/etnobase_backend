@@ -26,13 +26,17 @@ const PersonScheme = zod_1.default.object({
     lengthOfHair: zod_1.default.number().optional().nullable(),
     colorOfEyes: zod_1.default.string().min(2).max(255).optional().nullable(),
     colorOfHair: zod_1.default.string().min(2).max(255).optional().nullable(),
-    role: zod_1.default.nativeEnum(client_1.PersonRole),
     person_type: zod_1.default.nativeEnum(client_1.Person_type),
     sex: zod_1.default.nativeEnum(client_1.Person_sex),
     avatar: zod_1.default.string().min(2).max(255).optional(),
 });
-//create
+const personRole = zod_1.default.object({
+    id: zod_1.default.number(),
+    personId: zod_1.default.number().int(),
+    role: zod_1.default.nativeEnum(client_1.PersonRole),
+});
 const aditionalPersonSchema = zod_1.default.object({
+    roles: zod_1.default.array(personRole).optional(),
     filmography: zod_1.default.array(personFilmography_schema_1.filmographySchemaResponse).optional(),
     awards: zod_1.default.array(personAwardsSchema_1.personAwardsSchemaResponse).optional(),
     image: personImage_1.personImageResponse.optional(),
@@ -40,16 +44,22 @@ const aditionalPersonSchema = zod_1.default.object({
     video: zod_1.default.array(personVideo_scema_1.personVideoResponse).optional(),
     theater: zod_1.default.array(personTheatreSchema_1.personTheatreSchemaResponse).optional(),
 });
-const createPersonSchema = PersonScheme;
-//fetch
+//createPerson
+const createPersonSchema = PersonScheme.extend({
+    roles: zod_1.default.array(personRole.omit({ id: true, personId: true })),
+});
+//fechPersonResponse
 const personResponseSchema = PersonScheme.extend({
+    roles: zod_1.default.array(personRole.omit({ id: true, personId: true })),
     id: zod_1.default.number().int(),
 });
+//fetchManyPersonResonse
 const personsResponseSchema = zod_1.default.array(personResponseSchema);
+//params
 const personParamsSchema = zod_1.default.object({
     id: zod_1.default.number().int(),
 });
-//fetchOnePerson
+//fetchOnePersonByIdResponse
 const onePersonResponseSchema = PersonScheme.merge(aditionalPersonSchema).extend({
     id: zod_1.default.number().int(),
 });
