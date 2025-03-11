@@ -75,6 +75,9 @@ const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function*
     try {
         const persons = yield prisma_1.prisma.person.findMany({
             where: filter,
+            include: {
+                roles: true,
+            },
         });
         if (!persons || persons.length === 0) {
             return reply.status(404).send({
@@ -108,6 +111,7 @@ const fetchPersonById = (req, reply) => __awaiter(void 0, void 0, void 0, functi
                 video: true,
                 sckills: true,
                 theater: true,
+                roles: true,
             },
         });
         console.log(person);

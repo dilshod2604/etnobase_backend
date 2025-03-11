@@ -69,6 +69,9 @@ export const fetchPersons = async (
   try {
     const persons = await prisma.person.findMany({
       where: filter,
+      include: {
+        roles: true,
+      },
     });
 
     if (!persons || persons.length === 0) {
@@ -105,6 +108,7 @@ export const fetchPersonById = async (
         video: true,
         sckills: true,
         theater: true,
+        roles: true,
       },
     });
 
