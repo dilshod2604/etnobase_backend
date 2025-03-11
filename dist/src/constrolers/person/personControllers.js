@@ -66,12 +66,14 @@ const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.createPerson = createPerson;
 const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, age } = req.query;
-    const filter = (0, buildFIlters_1.buildFilters)([personFIlter_1.filterByName, personFIlter_1.filterByAge], {
+    const { name, age, role } = req.query;
+    console.log("role", role);
+    const filter = (0, buildFIlters_1.buildFilters)([personFIlter_1.filterByName, personFIlter_1.filterByAge, personFIlter_1.filterByRole], {
         name,
         age: Number(age),
+        role,
     });
-    console.log(filter);
+    console.log("filter", filter);
     try {
         const persons = yield prisma_1.prisma.person.findMany({
             where: filter,

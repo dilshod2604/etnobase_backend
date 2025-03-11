@@ -8,6 +8,7 @@ import { buildFilters } from "../../utils/buildFIlters";
 import {
   filterByAge,
   filterByName,
+  filterByRole,
 } from "../../filters/personFilters/personFIlter";
 import { PersonQuery } from "../../types/types";
 
@@ -59,13 +60,14 @@ export const fetchPersons = async (
   req: FastifyRequest<{ Querystring: PersonQuery }>,
   reply: FastifyReply
 ) => {
-  const { name, age } = req.query;
-
-  const filter = buildFilters([filterByName, filterByAge], {
+  const { name, age, role } = req.query;
+  console.log("role", role);
+  const filter = buildFilters([filterByName, filterByAge, filterByRole], {
     name,
     age: Number(age),
+    role,
   });
-  console.log(filter);
+  console.log("filter", filter);
   try {
     const persons = await prisma.person.findMany({
       where: filter,
@@ -126,7 +128,7 @@ export const fetchPersonById = async (
 };
 
 export const updatePerson = async (
-  req: FastifyRequest<{ Params: { id: number }; Body: CreatePersonInput }>,
+  req: FastifyRequest<{ Params: { id: number }; Body: UpdatePerssonInput }>,
   reply: FastifyReply
 ) => {
   const { id } = req.params;

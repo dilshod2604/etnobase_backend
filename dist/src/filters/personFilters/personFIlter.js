@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterByAge = exports.filterByName = void 0;
+exports.filterByRole = exports.filterByAge = exports.filterByName = void 0;
 const calculateDateRangeForAge_1 = require("../../utils/calculateDateRangeForAge");
 const formatDate_1 = require("../../utils/formatDate");
 const filterByName = (query) => {
@@ -29,3 +29,21 @@ const filterByAge = (query) => {
     return null;
 };
 exports.filterByAge = filterByAge;
+const filterByRole = (query) => {
+    if (query.role && typeof query.role === "string") {
+        const roles = query.role
+            .split(",")
+            .map((role) => role);
+        return {
+            roles: {
+                some: {
+                    role: {
+                        in: roles,
+                    },
+                },
+            },
+        };
+    }
+    return null;
+};
+exports.filterByRole = filterByRole;

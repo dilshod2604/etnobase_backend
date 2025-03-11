@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { PersonRole, Prisma } from "@prisma/client";
 import { PersonQuery } from "../../types/types";
 import { calculateDateRangeForAge } from "../../utils/calculateDateRangeForAge";
 import { formatDateToString } from "../../utils/formatDate";
@@ -28,6 +28,26 @@ export const filterByAge = (
       dateOfBirth: {
         gte: start,
         lte: end,
+      },
+    };
+  }
+  return null;
+};
+
+export const filterByRole = (
+  query: PersonQuery
+): Prisma.PersonWhereInput | null => {
+  if (query.role && typeof query.role === "string") {
+    const roles: PersonRole[] = query.role
+      .split(",")
+      .map((role) => role as PersonRole);
+    return {
+      roles: {
+        some: {
+          role: {
+            in: roles,
+          },
+        },
       },
     };
   }

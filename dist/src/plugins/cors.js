@@ -16,7 +16,7 @@ const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.register(cors_1.default, {
-        origin: "   http://localhost:3000",
+        origin: ["http://localhost:3000", "https://etnobaza.vercel.app"],
         methods: ["GET", "POST", "PUT", "DELETE"],
     });
 }));
