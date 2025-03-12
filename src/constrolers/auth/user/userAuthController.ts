@@ -99,11 +99,12 @@ export const signIn = async (
   }
 };
 export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
-  const { id } = req.params as { id: number };
+  const userId = (req.user as { id: number }).id;
+  console.log(userId);
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        id: id,
+        id: userId,
       },
       select: {
         id: true,

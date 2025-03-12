@@ -90,11 +90,12 @@ const signIn = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.signIn = signIn;
 const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const userId = req.user.id;
+    console.log(userId);
     try {
-        const user = yield prisma_1.prisma.user.findUnique({
+        const user = yield prisma_1.prisma.user.findFirst({
             where: {
-                id: id,
+                id: userId,
             },
             select: {
                 id: true,

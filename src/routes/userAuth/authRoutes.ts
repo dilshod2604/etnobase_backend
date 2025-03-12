@@ -36,17 +36,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   fastify.get(
-    "/user/:id",
+    "/user",
     {
       preHandler: [fastify.authJWT],
       schema: {
-        params: {
-          type: "object",
-          properties: {
-            id: { type: "number" },
-          },
-          required: ["id"],
-        },
         response: {
           200: $ref("getUserResonse"),
         },

@@ -33,16 +33,9 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, userAuthController_1.signIn);
-    fastify.get("/user/:id", {
+    fastify.get("/user", {
         preHandler: [fastify.authJWT],
         schema: {
-            params: {
-                type: "object",
-                properties: {
-                    id: { type: "number" },
-                },
-                required: ["id"],
-            },
             response: {
                 200: (0, AuthSchemas_1.$ref)("getUserResonse"),
             },
