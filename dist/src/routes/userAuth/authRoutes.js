@@ -43,9 +43,34 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
     }, userAuthController_1.getMe);
     fastify.post("/refresh-token", {
         schema: {
+            body: (0, AuthSchemas_1.$ref)("refreshTockenRequest"),
             response: {
                 200: (0, AuthSchemas_1.$ref)("refreshTockenResponse"),
             },
         },
     }, refreshAccessToken_1.refreshAccessToken);
+    fastify.post("/forgot-password", {
+        schema: {
+            body: (0, AuthSchemas_1.$ref)("forgotPasswordRequest"),
+            response: {
+                200: (0, AuthSchemas_1.$ref)("forgotPasswordResponse"),
+            },
+        },
+    }, userAuthController_1.forgotPassword);
+    fastify.post("/verify-code", {
+        schema: {
+            body: (0, AuthSchemas_1.$ref)("verifyResetCodeRequest"),
+            response: {
+                200: (0, AuthSchemas_1.$ref)("forgotPasswordResponse"),
+            },
+        },
+    }, userAuthController_1.verifyResetCode);
+    fastify.post("/reset-password", {
+        schema: {
+            body: (0, AuthSchemas_1.$ref)("resetPasswordRequest"),
+            response: {
+                200: (0, AuthSchemas_1.$ref)("forgotPasswordResponse"),
+            },
+        },
+    }, userAuthController_1.resetPassword);
 }));

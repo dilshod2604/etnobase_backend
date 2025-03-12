@@ -2,20 +2,23 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../../utils/prisma";
 
 export const refreshAccessToken = async (
-  req: FastifyRequest,
+  req: FastifyRequest<{ Body: { refreshToken: string } }>,
   reply: FastifyReply
 ) => {
+  const { refreshToken } = req.body;
+
   try {
-    const refreshToken = req.cookies.refresh_token;
-    console.log("refreshToken", refreshToken);
     if (!refreshToken) {
-      return reply.status(401).send({ message: "Токен отсутствует" });
+      return reply.status(400).send({ message: "Отсутствует refreshToken" });
     }
 
-    const decoded = req.server.jwt.verify<{ id: number; email: string }>(
+    const decoded = await req.server.jwt.verify<{ id: number; email: string }>(
       refreshToken
     );
-    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
 
     if (!user) {
       return reply.status(404).send({ message: "Пользователь не найден" });
@@ -23,15 +26,16 @@ export const refreshAccessToken = async (
 
     const newAccessToken = req.server.jwt.sign(
       { id: user.id, email: user.email },
-      { expiresIn: "7d" }
+      { expiresIn: "5m" }
     );
 
-    reply.send({
-      message: "AccessToken обновлён",
+    return reply.status(200).send({
       accessToken: newAccessToken,
     });
   } catch (error) {
-    console.error(error);
-    reply.status(403).send({ message: "Недействительный refresh токен" });
+    console.error("Ошибка при обновлении токена:", error);
+    return reply
+      .status(500)
+      .send({ message: "Ошибка сервера при обновлении токена" });
   }
 };

@@ -22,6 +22,7 @@ const singInUserSchema = zod_1.z.object({
 const signInUserResponse = zod_1.z.object({
     message: zod_1.z.string(),
     accessToken: zod_1.z.string(),
+    refreshToken: zod_1.z.string(),
 });
 const signUpUserResponse = zod_1.z.object({
     message: zod_1.z.string(),
@@ -33,10 +34,35 @@ const getUserResonse = zod_1.z.object({
     id: zod_1.z.number(),
     email: zod_1.z.string(),
     name: zod_1.z.string(),
+    role: zod_1.z.string(),
+});
+const refreshTockenRequest = zod_1.z.object({
+    refreshToken: zod_1.z.string(),
 });
 const refreshTockenResponse = zod_1.z.object({
-    message: zod_1.z.string(),
     accessToken: zod_1.z.string(),
+});
+//ressetPasword
+const forgotPasswordSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    code: zod_1.z.string(),
+    newPassword: zod_1.z.string(),
+});
+const forgotPasswordRequest = forgotPasswordSchema.omit({
+    code: true,
+    newPassword: true,
+});
+const forgotPasswordResponse = zod_1.z.object({
+    message: zod_1.z.string(),
+});
+//verifyResetCode
+const verifyResetCodeRequest = forgotPasswordSchema.omit({
+    email: true,
+    newPassword: true,
+});
+//resetPassword
+const resetPasswordRequest = forgotPasswordSchema.omit({
+    code: true,
 });
 _a = (0, fastify_zod_1.buildJsonSchemas)({
     getUserResonse,
@@ -45,4 +71,9 @@ _a = (0, fastify_zod_1.buildJsonSchemas)({
     signUpSchema,
     signUpUserResponse,
     refreshTockenResponse,
+    refreshTockenRequest,
+    forgotPasswordRequest,
+    forgotPasswordResponse,
+    verifyResetCodeRequest,
+    resetPasswordRequest,
 }, { $id: "Auth" }), exports.authSchema = _a.schemas, exports.$ref = _a.$ref;

@@ -2,9 +2,12 @@ import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { $ref } from "../../schemas/authScemas/AuthSchemas";
 import {
+  forgotPassword,
   getMe,
+  resetPassword,
   signIn,
   signUp,
+  verifyResetCode,
 } from "../../constrolers/auth/user/userAuthController";
 import { refreshAccessToken } from "../../constrolers/auth/user/refreshAccessToken";
 
@@ -52,11 +55,48 @@ export default fp(async (fastify: FastifyInstance) => {
     "/refresh-token",
     {
       schema: {
+        body: $ref("refreshTockenRequest"),
         response: {
           200: $ref("refreshTockenResponse"),
         },
       },
     },
     refreshAccessToken
+  );
+  fastify.post(
+    "/forgot-password",
+    {
+      schema: {
+        body: $ref("forgotPasswordRequest"),
+        response: {
+          200: $ref("forgotPasswordResponse"),
+        },
+      },
+    },
+    forgotPassword
+  );
+  fastify.post(
+    "/verify-code",
+    {
+      schema: {
+        body: $ref("verifyResetCodeRequest"),
+        response: {
+          200: $ref("forgotPasswordResponse"),
+        },
+      },
+    },
+    verifyResetCode
+  );
+  fastify.post(
+    "/reset-password",
+    {
+      schema: {
+        body: $ref("resetPasswordRequest"),
+        response: {
+          200: $ref("forgotPasswordResponse"),
+        },
+      },
+    },
+    resetPassword
   );
 });
