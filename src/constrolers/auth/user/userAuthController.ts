@@ -78,7 +78,7 @@ export const signIn = async (
 
     //refresh
     const refreshToken = req.server.jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email  },
       { expiresIn: "30d" }
     );
 

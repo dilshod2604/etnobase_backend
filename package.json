@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn index.ts",
     "build": "npx prisma generate && tsc",
-    "commit": "git status && git add . && git commit -m \"$(read -p 'Enter commit message: ' msg && echo $msg)\"",
+   "commit": "git status && git add . && powershell -Command \"$msg = Read-Host 'Enter commit message'; git commit -m $msg\"",
     "start": " npx prisma generate && node dist/index.js",
     "vercel-build": "npm run build && npx prisma generate"
   },
