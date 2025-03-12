@@ -73,7 +73,7 @@ export const signIn = async (
     //accessToken
     const accessToken = req.server.jwt.sign(
       { id: user.id, email: user.email },
-      { expiresIn: "7d" }
+      { expiresIn: "5m" }
     );
 
     //refresh

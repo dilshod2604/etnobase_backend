@@ -69,7 +69,7 @@ const signIn = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
             return reply.status(400).send({ message: "Неверный пароль" });
         }
         //accessToken
-        const accessToken = req.server.jwt.sign({ id: user.id, email: user.email }, { expiresIn: "7d" });
+        const accessToken = req.server.jwt.sign({ id: user.id, email: user.email }, { expiresIn: "5m" });
         //refresh
         const refreshToken = req.server.jwt.sign({ id: user.id, email: user.email }, { expiresIn: "30d" });
         reply.setCookie("refresh_token", refreshToken, {
