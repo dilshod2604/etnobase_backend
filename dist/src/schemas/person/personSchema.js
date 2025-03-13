@@ -29,7 +29,7 @@ const PersonScheme = zod_1.default.object({
     person_type: zod_1.default.nativeEnum(client_1.Person_type),
     sex: zod_1.default.nativeEnum(client_1.Person_sex),
     avatar: zod_1.default.string().min(2).max(255).optional(),
-    phoneNumber: zod_1.default.string().min(15).optional().nullable(),
+    phoneNumber: zod_1.default.string().optional().nullable(),
 });
 const personRole = zod_1.default.object({
     id: zod_1.default.number(),

@@ -24,7 +24,7 @@ const PersonScheme = z.object({
   person_type: z.nativeEnum(Person_type),
   sex: z.nativeEnum(Person_sex),
   avatar: z.string().min(2).max(255).optional(),
-  phoneNumber: z.string().min(15).optional().nullable(),
+  phoneNumber: z.string().optional().nullable(),
 });
 
 const personRole = z.object({
