@@ -77,6 +77,9 @@ const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function*
     try {
         const persons = yield prisma_1.prisma.person.findMany({
             where: filter,
+            omit: {
+                phoneNumber: true
+            },
             include: {
                 roles: true,
             },
@@ -105,6 +108,9 @@ const fetchPersonById = (req, reply) => __awaiter(void 0, void 0, void 0, functi
         const person = yield prisma_1.prisma.person.findFirst({
             where: {
                 id: id,
+            },
+            omit: {
+                phoneNumber: true
             },
             include: {
                 awards: true,

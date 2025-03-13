@@ -34,6 +34,7 @@ model Person {
   avatar       String?             @db.VarChar(255)
   person_type  Person_type?
   sex          Person_sex
+  phoneNumber  String?             @db.VarChar(255)
   filmography  Filmography[]
   awards       PersonAwards[]
   image        PersonImage[]

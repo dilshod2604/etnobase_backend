@@ -71,6 +71,9 @@ export const fetchPersons = async (
   try {
     const persons = await prisma.person.findMany({
       where: filter,
+      omit:{
+        phoneNumber:true
+      },
       include: {
         roles: true,
       },
@@ -102,6 +105,9 @@ export const fetchPersonById = async (
     const person = await prisma.person.findFirst({
       where: {
         id: id,
+      },
+      omit:{
+        phoneNumber:true
       },
       include: {
         awards: true,
