@@ -22,8 +22,8 @@ const sendEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, messa
         port: 587,
         secure: false,
         auth: {
-            user: "dima.dev26@gmail.com",
-            pass: "qnrfbdvhimlthfzv",
+            user: process.env.USER,
+            pass: process.env.APP_PASSWORD,
         },
     });
     const mailOptions = {

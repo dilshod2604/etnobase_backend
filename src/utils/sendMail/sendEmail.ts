@@ -1,12 +1,11 @@
 import nodemailer from "nodemailer";
 import { resetPasswordTemplate } from "./resetPasswordTemplate";
-
 export const sendEmail = async ({
   to,
   message,
 }: {
   to: string;
-  resipientName?:string
+  resipientName?: string;
   message: string;
 }): Promise<string> => {
   const transporter = nodemailer.createTransport({
@@ -15,8 +14,8 @@ export const sendEmail = async ({
     port: 587,
     secure: false,
     auth: {
-      user: "dima.dev26@gmail.com",
-      pass: "qnrfbdvhimlthfzv",
+      user: process.env.USER,
+      pass: process.env.APP_PASSWORD,
     },
   });
 
