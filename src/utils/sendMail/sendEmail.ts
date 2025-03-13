@@ -22,7 +22,7 @@ export const sendEmail = async ({
   const mailOptions = {
     from: {
       name: "Etnobasa",
-      address: "dima.dev26@gmail.com",
+      address: process.env.USER!,
     },
     to,
     subject: "Сброс пароля",

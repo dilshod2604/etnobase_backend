@@ -29,7 +29,7 @@ const sendEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, messa
     const mailOptions = {
         from: {
             name: "Etnobasa",
-            address: "dima.dev26@gmail.com",
+            address: process.env.USER,
         },
         to,
         subject: "Сброс пароля",
