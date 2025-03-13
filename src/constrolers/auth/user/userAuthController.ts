@@ -9,7 +9,8 @@ import {
   SignUpUserInput,
   VerifyResetCodeInput,
 } from "../../../schemas/authScemas/AuthSchemas";
-import { sendEmail } from "../../../utils/sendEmail";
+import { sendEmail } from "../../../utils/sendMail/sendEmail";
+
 export const signUp = async (
   req: FastifyRequest<{ Body: SignUpUserInput }>,
   reply: FastifyReply
@@ -106,7 +107,7 @@ export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
         id: true,
         email: true,
         name: true,
-        role:true
+        role: true,
       },
     });
     if (!user) {
@@ -125,7 +126,6 @@ export const forgotPassword = async (
   reply: FastifyReply
 ) => {
   const { email } = req.body;
-
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     return reply.status(404).send({ message: "Пользователь не найден" });
@@ -140,7 +140,6 @@ export const forgotPassword = async (
     create: { email, code: resetCode, expiresAt },
   });
   const result = await sendEmail({
-    from: "service@etnomedia",
     to: email,
     message: resetCode,
   });

@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.verifyResetCode = exports.forgotPassword = exports.getMe = exports.signIn = exports.signUp = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = require("../../../utils/prisma");
-const sendEmail_1 = require("../../../utils/sendEmail");
+const sendEmail_1 = require("../../../utils/sendMail/sendEmail");
 const signUp = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, name, password } = req.body;
@@ -97,7 +97,7 @@ const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
                 id: true,
                 email: true,
                 name: true,
-                role: true
+                role: true,
             },
         });
         if (!user) {
@@ -127,7 +127,6 @@ const forgotPassword = (req, reply) => __awaiter(void 0, void 0, void 0, functio
         create: { email, code: resetCode, expiresAt },
     });
     const result = yield (0, sendEmail_1.sendEmail)({
-        from: "service@etnomedia",
         to: email,
         message: resetCode,
     });

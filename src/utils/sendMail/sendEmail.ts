@@ -1,27 +1,33 @@
 import nodemailer from "nodemailer";
+import { resetPasswordTemplate } from "./resetPasswordTemplate";
 
 export const sendEmail = async ({
-  from,
   to,
   message,
 }: {
-  from: string;
   to: string;
+  resipientName?:string
   message: string;
 }): Promise<string> => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-      user: "your-email@gmail.com",
-      pass: "your-email-password",
+      user: "dima.dev26@gmail.com",
+      pass: "qnrfbdvhimlthfzv",
     },
   });
 
   const mailOptions = {
-    from: from,
-    to: to,
+    from: {
+      name: "Etnobasa",
+      address: "dima.dev26@gmail.com",
+    },
+    to,
     subject: "Сброс пароля",
-    text: `Ваш код для сброса пароля: ${message}. Код действителен в течение 10 минут.`,
+    html: resetPasswordTemplate(message),
   };
 
   try {
