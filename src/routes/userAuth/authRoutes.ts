@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { $ref } from "../../schemas/authScemas/AuthSchemas";
 import {
+  editMe,
   forgotPassword,
   getMe,
   resetPassword,
@@ -49,6 +50,19 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     getMe
+  );
+  fastify.put(
+    "/user",
+    {
+      preHandler: [fastify.authJWT],
+      schema: {
+        body: $ref("uppdateUser"),
+        response: {
+          200: $ref("uppdateUserResponse"),
+        },
+      },
+    },
+    editMe
   );
 
   fastify.post(

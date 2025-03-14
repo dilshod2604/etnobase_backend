@@ -32,14 +32,27 @@ const signUpUserResponse = z.object({
     id: z.number(),
   }),
 });
-
+//getUser
 const getUserResonse = z.object({
   id: z.number(),
   email: z.string(),
   name: z.string(),
-  role:z.string(),
+  role: z.string(),
+});
+//updateUser
+const uppdateUser = z.object({
+  id: z.number(),
+  email: z.string().email(),
+  name: z.string(),
 });
 
+const uppdateUserResponse = z.object({
+  message: z.string(),
+});
+
+export type UpdateUserInput = z.infer<typeof uppdateUser>;
+
+//refreshToken
 const refreshTockenRequest = z.object({
   refreshToken: z.string(),
 });
@@ -77,6 +90,8 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordRequest>;
 export const { schemas: authSchema, $ref } = buildJsonSchemas(
   {
     getUserResonse,
+    uppdateUser,
+    uppdateUserResponse,
     singInUserSchema,
     signInUserResponse,
     signUpSchema,

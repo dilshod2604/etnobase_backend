@@ -97,7 +97,6 @@ export const signIn = async (
 };
 export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
   const userId = (req.user as { id: number }).id;
-  console.log(userId);
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -119,6 +118,31 @@ export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
     reply
       .status(500)
       .send({ message: "Ошибка получения информации о пользователе" });
+  }
+};
+export const editMe = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { id, email, name } = req.body as {
+    id: number;
+    email: string;
+    name: string;
+  };
+  try {
+    const updateUser = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        email,
+        name,
+      },
+    });
+    if (!updateUser) {
+      return reply.status(404).send({ message: "Пользователь не найден" });
+    }
+    reply.status(200).send({ message: "Пользователь успешно изменен" });
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при обновлении пользователе" });
   }
 };
 export const forgotPassword = async (

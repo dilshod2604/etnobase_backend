@@ -41,6 +41,15 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, userAuthController_1.getMe);
+    fastify.put("/user", {
+        preHandler: [fastify.authJWT],
+        schema: {
+            body: (0, AuthSchemas_1.$ref)("uppdateUser"),
+            response: {
+                200: (0, AuthSchemas_1.$ref)("uppdateUserResponse"),
+            },
+        },
+    }, userAuthController_1.editMe);
     fastify.post("/refresh-token", {
         schema: {
             body: (0, AuthSchemas_1.$ref)("refreshTockenRequest"),

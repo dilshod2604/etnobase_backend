@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.verifyResetCode = exports.forgotPassword = exports.getMe = exports.signIn = exports.signUp = void 0;
+exports.resetPassword = exports.verifyResetCode = exports.forgotPassword = exports.editMe = exports.getMe = exports.signIn = exports.signUp = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = require("../../../utils/prisma");
 const sendEmail_1 = require("../../../utils/sendMail/sendEmail");
@@ -87,7 +87,6 @@ const signIn = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
 exports.signIn = signIn;
 const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
-    console.log(userId);
     try {
         const user = yield prisma_1.prisma.user.findFirst({
             where: {
@@ -113,6 +112,29 @@ const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getMe = getMe;
+const editMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, email, name } = req.body;
+    try {
+        const updateUser = yield prisma_1.prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                email,
+                name,
+            },
+        });
+        if (!updateUser) {
+            return reply.status(404).send({ message: "Пользователь не найден" });
+        }
+        reply.status(200).send({ message: "Пользователь успешно изменен" });
+    }
+    catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка при обновлении пользователе" });
+    }
+});
+exports.editMe = editMe;
 const forgotPassword = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
     const user = yield prisma_1.prisma.user.findUnique({ where: { email } });
