@@ -32,7 +32,7 @@ model Person {
   colorOfHair  String?             @db.VarChar(255)
   dateOfBirth  String?             @db.VarChar(255)
   avatar       String?             @db.VarChar(255)
-  person_type  Person_type?
+  person_type   Person_type?
   sex          Person_sex
   phoneNumber  String?             @db.VarChar(255)
   filmography  Filmography[]
@@ -120,11 +120,6 @@ model PasswordResetCode {
   user      User     @relation(fields: [email], references: [email], onDelete: Cascade, map: "PasswordResetCode_ibfk_1")
 }
 
-enum Person_type {
-  AMATEUR
-  PROFESSIONAL
-}
-
 enum PersonRole {
   PRODUCTION_DESIGNER
   EXECUTIVE_PRODUCER
@@ -154,6 +149,7 @@ enum PersonRole {
   TRANSPORTATION_COORDINATOR
   EXTRA_CROWD
   DRONE_OPERATOR
+  SCREENWRITER
 }
 
 enum Person_sex {
@@ -164,4 +160,9 @@ enum Person_sex {
 enum User_role {
   USER
   ADMIN
+}
+
+enum Person_type {
+  AMATEUR
+  PROFESSIONAL
 }
