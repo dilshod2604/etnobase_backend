@@ -32,9 +32,10 @@ model Person {
   colorOfHair  String?             @db.VarChar(255)
   dateOfBirth  String?             @db.VarChar(255)
   avatar       String?             @db.VarChar(255)
-  person_type   Person_type?
+  person_type  Person_type?
   sex          Person_sex
   phoneNumber  String?             @db.VarChar(255)
+  nationality  String              @db.VarChar(255)
   filmography  Filmography[]
   awards       PersonAwards[]
   image        PersonImage[]
@@ -123,7 +124,7 @@ model PasswordResetCode {
 enum PersonRole {
   PRODUCTION_DESIGNER
   EXECUTIVE_PRODUCER
-  DIRECTOR  
+  DIRECTOR
   PRODUCER
   DIRECTOR_OF_PHOTOGRAPHY
   ACTORS
