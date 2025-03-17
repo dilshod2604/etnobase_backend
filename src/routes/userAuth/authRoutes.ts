@@ -11,6 +11,7 @@ import {
   verifyResetCode,
 } from "../../constrolers/auth/user/userAuthController";
 import { refreshAccessToken } from "../../constrolers/auth/user/refreshAccessToken";
+import { googleAuthController } from "../../constrolers/auth/google/googleAuth";
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
@@ -113,4 +114,5 @@ export default fp(async (fastify: FastifyInstance) => {
     },
     resetPassword
   );
+  fastify.get("/auth/google/callback", googleAuthController);
 });

@@ -1,5 +1,4 @@
 import { buildJsonSchemas } from "fastify-zod";
-import { types } from "node:util";
 import { z } from "zod";
 const signUpSchema = z.object({
   name: z.string().min(2, "Имя должно содержать хотя бы 2 символа").max(255),
@@ -38,6 +37,7 @@ const getUserResonse = z.object({
   email: z.string(),
   name: z.string(),
   role: z.string(),
+  provider: z.string(),
 });
 //updateUser
 const uppdateUser = z.object({

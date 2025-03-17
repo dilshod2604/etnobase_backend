@@ -16,6 +16,7 @@ const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
 const AuthSchemas_1 = require("../../schemas/authScemas/AuthSchemas");
 const userAuthController_1 = require("../../constrolers/auth/user/userAuthController");
 const refreshAccessToken_1 = require("../../constrolers/auth/user/refreshAccessToken");
+const googleAuth_1 = require("../../constrolers/auth/google/googleAuth");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.post("/sign-up", {
         schema: {
@@ -82,4 +83,5 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, userAuthController_1.resetPassword);
+    fastify.get("/auth/google/callback", googleAuth_1.googleAuthController);
 }));

@@ -109,6 +109,8 @@ model User {
   email       String             @unique(map: "email") @db.VarChar(255)
   password    String             @db.VarChar(255)
   role        User_role?         @default(USER)
+  avatar      String?            @db.VarChar(255)
+  provider    String?            @default("email") @db.VarChar(255)
   resetCodes  PasswordResetCode?
   userPersons Person[]           @relation("UserPerson")
 }
