@@ -40,6 +40,7 @@ export const signUp = async (
         id: true,
         name: true,
         email: true,
+        provider: true,
       },
     });
     reply
@@ -107,6 +108,7 @@ export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
         email: true,
         name: true,
         role: true,
+        provider:true
       },
     });
     if (!user) {

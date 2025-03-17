@@ -40,6 +40,7 @@ const signUp = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
                 id: true,
                 name: true,
                 email: true,
+                provider: true,
             },
         });
         reply
@@ -97,6 +98,7 @@ const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
                 email: true,
                 name: true,
                 role: true,
+                provider: true
             },
         });
         if (!user) {
