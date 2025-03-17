@@ -38,6 +38,7 @@ const getUserResonse = z.object({
   name: z.string(),
   role: z.string(),
   provider: z.string(),
+  avatar: z.string(),
 });
 //updateUser
 const uppdateUser = z.object({

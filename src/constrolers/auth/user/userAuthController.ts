@@ -108,7 +108,8 @@ export const getMe = async (req: FastifyRequest, reply: FastifyReply) => {
         email: true,
         name: true,
         role: true,
-        provider:true
+        provider: true,
+        avatar: true,
       },
     });
     if (!user) {

@@ -98,7 +98,8 @@ const getMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
                 email: true,
                 name: true,
                 role: true,
-                provider: true
+                provider: true,
+                avatar: true,
             },
         });
         if (!user) {
