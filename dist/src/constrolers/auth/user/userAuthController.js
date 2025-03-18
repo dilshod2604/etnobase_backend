@@ -134,7 +134,7 @@ const editMe = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error(error);
-        reply.status(500).send({ message: "Ошибка при обновлении пользователе" });
+        reply.status(500).send({ message: "Ошибка при пользователе" });
     }
 });
 exports.editMe = editMe;

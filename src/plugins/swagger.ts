@@ -13,6 +13,7 @@ import { PersonAvatarSchema } from "../schemas/person/avatars/personsAvatarSchem
 import { uploadPersonImageSchema } from "../schemas/person/image/uploadPersonImageSchema";
 import { uploadPersonVideosSchema } from "../schemas/person/video/uploadPersonVideosSchema";
 import { authSchema } from "../schemas/authScemas/AuthSchemas";
+import { UserAvatarSchema } from "../schemas/user/avatars/userAvatarSchema";
 
 export default fp(async (fastify: FastifyInstance) => {
   const schemas = [
@@ -27,6 +28,7 @@ export default fp(async (fastify: FastifyInstance) => {
     ...uploadPersonImageSchema,
     ...uploadPersonVideosSchema,
     ...authSchema,
+    ...UserAvatarSchema
   ];
 
   schemas.forEach((schema) => {

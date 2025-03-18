@@ -145,7 +145,7 @@ export const editMe = async (req: FastifyRequest, reply: FastifyReply) => {
     reply.status(200).send({ message: "Пользователь успешно изменен" });
   } catch (error) {
     console.error(error);
-    reply.status(500).send({ message: "Ошибка при обновлении пользователе" });
+    reply.status(500).send({ message: "Ошибка при пользователе" });
   }
 };
 export const forgotPassword = async (
