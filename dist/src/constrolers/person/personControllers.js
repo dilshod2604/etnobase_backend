@@ -88,7 +88,6 @@ const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function*
     try {
         const persons = yield prisma_1.prisma.person.findMany({
             where: filter,
-            take: 25,
             include: {
                 roles: true,
             },

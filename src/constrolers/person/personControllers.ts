@@ -90,7 +90,6 @@ export const fetchPersons = async (
   try {
     const persons = await prisma.person.findMany({
       where: filter,
-      take: 25,
       include: {
         roles: true,
       },
