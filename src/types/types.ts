@@ -1,12 +1,9 @@
-import { PersonRole } from "@prisma/client";
 export interface PersonQuery {
   name?: string;
-  age?: number;
+  age?: string;
   role?: string[] | string;
+  sex?: string;
+  person_type?: string;
+  nationality?: string[] | string;
+  cityOfLive?: string[] | string;
 }
-
-// export interface PersonQueryStaring {
-//   name?: string;
-//   age?: number;
-//   role?:
-// }

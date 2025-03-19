@@ -44,6 +44,7 @@ const uppdateUser = zod_1.z.object({
     id: zod_1.z.number(),
     email: zod_1.z.string().email(),
     name: zod_1.z.string(),
+    avatar: zod_1.z.string().optional().nullable(),
 });
 const uppdateUserResponse = zod_1.z.object({
     message: zod_1.z.string(),

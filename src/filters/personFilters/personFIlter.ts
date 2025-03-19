@@ -1,4 +1,4 @@
-import { PersonRole, Prisma } from "@prisma/client";
+import { PersonRole, Prisma, Person_sex, Person_type } from "@prisma/client";
 import { PersonQuery } from "../../types/types";
 import { calculateDateRangeForAge } from "../../utils/calculateDateRangeForAge";
 import { formatDateToString } from "../../utils/formatDate";
@@ -20,7 +20,8 @@ export const filterByAge = (
   query: PersonQuery
 ): Prisma.PersonWhereInput | null => {
   if (query.age) {
-    const { endOfAge, startOfAge } = calculateDateRangeForAge(query.age!);
+    const ages = query.age.split(",").map(Number);
+    const { endOfAge, startOfAge } = calculateDateRangeForAge(ages);
     const start = formatDateToString(startOfAge);
     const end = formatDateToString(endOfAge);
 
@@ -48,6 +49,60 @@ export const filterByRole = (
             in: roles,
           },
         },
+      },
+    };
+  }
+  return null;
+};
+
+export const filterBySex = (
+  query: PersonQuery
+): Prisma.PersonWhereInput | null => {
+  if (query.sex) {
+    return {
+      sex: {
+        equals: query.sex as Person_sex,
+      },
+    };
+  }
+  return null;
+};
+
+export const filterByPersonType = (
+  query: PersonQuery
+): Prisma.PersonWhereInput | null => {
+  if (query.sex) {
+    return {
+      person_type: {
+        equals: query.person_type as Person_type,
+      },
+    };
+  }
+  return null;
+};
+
+export const filterByNationality = (
+  query: PersonQuery
+): Prisma.PersonWhereInput | null => {
+  if (query.nationality && typeof query.nationality === "string") {
+    const nationalities = query.nationality.split(",").map((nation) => nation);
+    return {
+      nationality: {
+        in: nationalities,
+      },
+    };
+  }
+  return null;
+};
+
+export const filterByCityOfLive = (
+  query: PersonQuery
+): Prisma.PersonWhereInput | null => {
+  if (query.cityOfLive && typeof query.cityOfLive === "string") {
+    const cities = query.cityOfLive.split(",").map((city) => city);
+    return {
+      cityOfLive: {
+        in: cities,
       },
     };
   }
