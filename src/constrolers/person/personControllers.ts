@@ -15,6 +15,7 @@ import {
   filterBySex,
 } from "../../filters/personFilters/personFIlter";
 import { PersonQuery } from "../../types/types";
+import { encodeIfCyrillic } from "../../utils/encodeIfCyrillic";
 
 export const createPerson = async (
   req: FastifyRequest<{ Body: CreatePersonInput }>,
@@ -77,13 +78,13 @@ export const fetchPersons = async (
       filterByCityOfLive,
     ],
     {
-      name,
+      name: encodeIfCyrillic(name as string),
       age: age,
       role,
       sex,
       person_type,
-      nationality,
-      cityOfLive,
+      nationality: encodeIfCyrillic(nationality as string),
+      cityOfLive: encodeIfCyrillic(cityOfLive as string),
     }
   );
   console.log("filter", filter);
