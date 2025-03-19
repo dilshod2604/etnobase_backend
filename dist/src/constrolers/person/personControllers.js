@@ -24,7 +24,6 @@ exports.deletePerson = exports.updatePerson = exports.fetchPersonById = exports.
 const prisma_1 = require("../../utils/prisma");
 const buildFIlters_1 = require("../../utils/buildFIlters");
 const personFIlter_1 = require("../../filters/personFilters/personFIlter");
-const encodeIfCyrillic_1 = require("../../utils/encodeIfCyrillic");
 const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     const { roles } = data, personData = __rest(data, ["roles"]);
@@ -77,15 +76,19 @@ const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function*
         personFIlter_1.filterByNationality,
         personFIlter_1.filterByCityOfLive,
     ], {
-        name: (0, encodeIfCyrillic_1.encodeIfCyrillic)(name),
+        name: name ? decodeURIComponent(name) : undefined,
         age: age,
         role,
         sex,
         person_type,
-        nationality: (0, encodeIfCyrillic_1.encodeIfCyrillic)(nationality),
-        cityOfLive: (0, encodeIfCyrillic_1.encodeIfCyrillic)(cityOfLive),
+        nationality: nationality
+            ? decodeURIComponent(nationality)
+            : undefined,
+        cityOfLive: cityOfLive
+            ? decodeURIComponent(cityOfLive)
+            : undefined,
     });
-    console.log("filter", filter);
+    console.log("Filter", cityOfLive);
     try {
         const persons = yield prisma_1.prisma.person.findMany({
             where: filter,

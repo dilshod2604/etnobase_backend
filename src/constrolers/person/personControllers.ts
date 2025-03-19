@@ -78,16 +78,20 @@ export const fetchPersons = async (
       filterByCityOfLive,
     ],
     {
-      name: encodeIfCyrillic(name as string),
+      name: name ? decodeURIComponent(name) : undefined,
       age: age,
       role,
       sex,
       person_type,
-      nationality: encodeIfCyrillic(nationality as string),
-      cityOfLive: encodeIfCyrillic(cityOfLive as string),
+      nationality: nationality
+        ? decodeURIComponent(nationality as string)
+        : undefined,
+      cityOfLive: cityOfLive
+        ? decodeURIComponent(cityOfLive as string)
+        : undefined,
     }
   );
-  console.log("filter", filter);
+  console.log("Filter",cityOfLive );
   try {
     const persons = await prisma.person.findMany({
       where: filter,
