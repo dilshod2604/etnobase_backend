@@ -6,4 +6,5 @@ export interface PersonQuery {
   person_type?: string;
   nationality?: string[] | string;
   cityOfLive?: string[] | string;
+  take?: number;
 }

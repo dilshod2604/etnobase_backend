@@ -66,7 +66,7 @@ const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.createPerson = createPerson;
 const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, age, role, sex, person_type, nationality, cityOfLive } = req.query;
+    const { name, age, role, sex, person_type, nationality, cityOfLive, take } = req.query;
     const filter = (0, buildFIlters_1.buildFilters)([
         personFIlter_1.filterByName,
         personFIlter_1.filterByAge,
@@ -95,6 +95,7 @@ const fetchPersons = (req, reply) => __awaiter(void 0, void 0, void 0, function*
             include: {
                 roles: true,
             },
+            take: take ? Number(take) : undefined,
         });
         if (!persons || persons.length === 0) {
             return reply.status(404).send({

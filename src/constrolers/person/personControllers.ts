@@ -65,7 +65,7 @@ export const fetchPersons = async (
   req: FastifyRequest<{ Querystring: PersonQuery }>,
   reply: FastifyReply
 ) => {
-  const { name, age, role, sex, person_type, nationality, cityOfLive } =
+  const { name, age, role, sex, person_type, nationality, cityOfLive, take } =
     req.query;
   const filter = buildFilters(
     [
@@ -91,13 +91,14 @@ export const fetchPersons = async (
         : undefined,
     }
   );
-  console.log("Filter",cityOfLive );
+  console.log("Filter", cityOfLive);
   try {
     const persons = await prisma.person.findMany({
       where: filter,
       include: {
         roles: true,
       },
+      take: take ? Number(take) : undefined,
     });
 
     if (!persons || persons.length === 0) {
