@@ -8,6 +8,7 @@ import {
   fetchPersons,
   updatePerson,
 } from "../../constrolers/person/personControllers";
+import { searchPerson } from "../../constrolers/person/srearch_person/searchPersonsController";
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
@@ -69,5 +70,16 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     deletePerson
+  );
+  fastify.get(
+    "/persons/search",
+    {
+      schema: {
+        response: {
+          200: $ref("personsResponseSchema"),
+        },
+      },
+    },
+    searchPerson
   );
 });

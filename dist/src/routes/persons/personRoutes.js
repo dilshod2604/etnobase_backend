@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
 const personSchema_1 = require("../../schemas/person/personSchema");
 const personControllers_1 = require("../../constrolers/person/personControllers");
+const searchPersonsController_1 = require("../../constrolers/person/srearch_person/searchPersonsController");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.post("/persons", {
         schema: {
@@ -55,4 +56,11 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, personControllers_1.deletePerson);
+    fastify.get("/persons/search", {
+        schema: {
+            response: {
+                200: (0, personSchema_1.$ref)("personsResponseSchema"),
+            },
+        },
+    }, searchPersonsController_1.searchPerson);
 }));

@@ -8,6 +8,7 @@ import {
   resetPassword,
   signIn,
   signUp,
+  updatePasswod,
   verifyResetCode,
 } from "../../constrolers/auth/user/userAuthController";
 import { refreshAccessToken } from "../../constrolers/auth/user/refreshAccessToken";
@@ -115,4 +116,16 @@ export default fp(async (fastify: FastifyInstance) => {
     resetPassword
   );
   fastify.get("/auth/google/callback", googleAuthController);
+  fastify.post(
+    "/update/password",
+    {
+      schema: {
+        body: $ref("updatePasswordRequest"),
+        response: {
+          200: $ref("updatePasswordResponse"),
+        },
+      },
+    },
+    updatePasswod
+  );
 });

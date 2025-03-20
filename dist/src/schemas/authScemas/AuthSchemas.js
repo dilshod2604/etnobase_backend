@@ -78,6 +78,15 @@ const verifyResetCodeRequest = forgotPasswordSchema.omit({
 const resetPasswordRequest = forgotPasswordSchema.omit({
     code: true,
 });
+//updatePassword
+const updatePasswordRequest = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    oldPassword: zod_1.z.string(),
+    newPassword: zod_1.z.string(),
+});
+const updatePasswordResponse = zod_1.z.object({
+    message: zod_1.z.string(),
+});
 _a = (0, fastify_zod_1.buildJsonSchemas)({
     getUserResonse,
     uppdateUser,
@@ -92,4 +101,6 @@ _a = (0, fastify_zod_1.buildJsonSchemas)({
     forgotPasswordResponse,
     verifyResetCodeRequest,
     resetPasswordRequest,
+    updatePasswordRequest,
+    updatePasswordResponse,
 }, { $id: "Auth" }), exports.authSchema = _a.schemas, exports.$ref = _a.$ref;

@@ -7,6 +7,7 @@ import {
   ResetPasswordInput,
   SignInUserInput,
   SignUpUserInput,
+  UpdatePasswordInput,
   VerifyResetCodeInput,
 } from "../../../schemas/authScemas/AuthSchemas";
 import { sendEmail } from "../../../utils/sendMail/sendEmail";
@@ -216,4 +217,33 @@ export const resetPassword = async (
   await prisma.passwordResetCode.delete({ where: { email: resetEntry.email } });
 
   return reply.send({ message: "Пароль успешно изменён" });
+};
+export const updatePasswod = async (
+  req: FastifyRequest<{ Body: UpdatePasswordInput }>,
+  reply: FastifyReply
+) => {
+  const { email, newPassword, oldPassword } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+    if (!user) {
+      return reply.status(404).send({ message: "Пользователь не найден" });
+    }
+    const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+    if (!isValidPassword) {
+      return reply.status(400).send({ message: "Неверный пароль" });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+    reply.status(200).send({ message: "Пароль успешно изменён" });
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при изменении паролья" });
+  }
 };

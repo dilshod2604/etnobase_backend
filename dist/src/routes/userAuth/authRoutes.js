@@ -84,4 +84,12 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         },
     }, userAuthController_1.resetPassword);
     fastify.get("/auth/google/callback", googleAuth_1.googleAuthController);
+    fastify.post("/update/password", {
+        schema: {
+            body: (0, AuthSchemas_1.$ref)("updatePasswordRequest"),
+            response: {
+                200: (0, AuthSchemas_1.$ref)("updatePasswordResponse"),
+            },
+        },
+    }, userAuthController_1.updatePasswod);
 }));

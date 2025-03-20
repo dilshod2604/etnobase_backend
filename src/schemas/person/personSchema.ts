@@ -25,7 +25,7 @@ const PersonScheme = z.object({
   sex: z.nativeEnum(Person_sex),
   avatar: z.string().min(2).max(255).optional(),
   phoneNumber: z.string().optional().nullable(),
-  nationality:z.string()
+  nationality: z.string(),
 });
 
 const personRole = z.object({
@@ -62,6 +62,7 @@ const personsResponseSchema = z.array(personResponseSchema);
 const personParamsSchema = z.object({
   id: z.number().int(),
 });
+
 
 //fetchOnePersonByIdResponse
 const onePersonResponseSchema = PersonScheme.merge(

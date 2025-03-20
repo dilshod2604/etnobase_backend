@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.verifyResetCode = exports.forgotPassword = exports.editMe = exports.getMe = exports.signIn = exports.signUp = void 0;
+exports.updatePasswod = exports.resetPassword = exports.verifyResetCode = exports.forgotPassword = exports.editMe = exports.getMe = exports.signIn = exports.signUp = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = require("../../../utils/prisma");
 const sendEmail_1 = require("../../../utils/sendMail/sendEmail");
@@ -186,3 +186,31 @@ const resetPassword = (req, reply) => __awaiter(void 0, void 0, void 0, function
     return reply.send({ message: "Пароль успешно изменён" });
 });
 exports.resetPassword = resetPassword;
+const updatePasswod = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, newPassword, oldPassword } = req.body;
+    try {
+        const user = yield prisma_1.prisma.user.findFirst({
+            where: {
+                email,
+            },
+        });
+        if (!user) {
+            return reply.status(404).send({ message: "Пользователь не найден" });
+        }
+        const isValidPassword = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!isValidPassword) {
+            return reply.status(400).send({ message: "Неверный пароль" });
+        }
+        const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
+        yield prisma_1.prisma.user.update({
+            where: { id: user.id },
+            data: { password: hashedPassword },
+        });
+        reply.status(200).send({ message: "Пароль успешно изменён" });
+    }
+    catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка при изменении паролья" });
+    }
+});
+exports.updatePasswod = updatePasswod;

@@ -85,9 +85,20 @@ const verifyResetCodeRequest = forgotPasswordSchema.omit({
 const resetPasswordRequest = forgotPasswordSchema.omit({
   code: true,
 });
+
+//updatePassword
+const updatePasswordRequest = z.object({
+  email: z.string().email(),
+  oldPassword: z.string(),
+  newPassword: z.string(),
+});
+const updatePasswordResponse = z.object({
+  message: z.string(),
+});
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordRequest>;
 export type VerifyResetCodeInput = z.infer<typeof verifyResetCodeRequest>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordRequest>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordRequest>;
 
 export const { schemas: authSchema, $ref } = buildJsonSchemas(
   {
@@ -104,6 +115,8 @@ export const { schemas: authSchema, $ref } = buildJsonSchemas(
     forgotPasswordResponse,
     verifyResetCodeRequest,
     resetPasswordRequest,
+    updatePasswordRequest,
+    updatePasswordResponse,
   },
   { $id: "Auth" }
 );
