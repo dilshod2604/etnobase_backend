@@ -9,7 +9,7 @@ import { personSckillsSchemaResponse } from "./sckills/personSckillsSchema";
 import { personVideoResponse } from "./video/personVideo.scema";
 import { personTheatreSchemaResponse } from "./theatre/personTheatreSchema";
 
-const PersonScheme = z.object({
+export const PersonScheme = z.object({
   firstName: z.string().min(2).max(255),
   lastName: z.string().min(2).max(255),
   dateOfBirth: z.string().optional().nullable(),
@@ -28,7 +28,7 @@ const PersonScheme = z.object({
   nationality: z.string(),
 });
 
-const personRole = z.object({
+ export const personRole = z.object({
   id: z.number(),
   personId: z.number().int(),
   role: z.nativeEnum(PersonRole),

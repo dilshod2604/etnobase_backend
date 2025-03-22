@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.$ref = exports.personSchema = void 0;
+exports.$ref = exports.personSchema = exports.personRole = exports.PersonScheme = void 0;
 const zod_1 = __importDefault(require("zod"));
 const fastify_zod_1 = require("fastify-zod");
 const client_1 = require("@prisma/client");
@@ -14,7 +14,7 @@ const personImage_1 = require("./image/personImage");
 const personSckillsSchema_1 = require("./sckills/personSckillsSchema");
 const personVideo_scema_1 = require("./video/personVideo.scema");
 const personTheatreSchema_1 = require("./theatre/personTheatreSchema");
-const PersonScheme = zod_1.default.object({
+exports.PersonScheme = zod_1.default.object({
     firstName: zod_1.default.string().min(2).max(255),
     lastName: zod_1.default.string().min(2).max(255),
     dateOfBirth: zod_1.default.string().optional().nullable(),
@@ -32,13 +32,13 @@ const PersonScheme = zod_1.default.object({
     phoneNumber: zod_1.default.string().optional().nullable(),
     nationality: zod_1.default.string(),
 });
-const personRole = zod_1.default.object({
+exports.personRole = zod_1.default.object({
     id: zod_1.default.number(),
     personId: zod_1.default.number().int(),
     role: zod_1.default.nativeEnum(client_1.PersonRole),
 });
 const aditionalPersonSchema = zod_1.default.object({
-    roles: zod_1.default.array(personRole).optional(),
+    roles: zod_1.default.array(exports.personRole).optional(),
     filmography: zod_1.default.array(personFilmography_schema_1.filmographySchemaResponse).optional(),
     awards: zod_1.default.array(personAwardsSchema_1.personAwardsSchemaResponse).optional(),
     image: personImage_1.personImageResponse.optional(),
@@ -47,12 +47,12 @@ const aditionalPersonSchema = zod_1.default.object({
     theater: zod_1.default.array(personTheatreSchema_1.personTheatreSchemaResponse).optional(),
 });
 //createPerson
-const createPersonSchema = PersonScheme.extend({
-    roles: zod_1.default.array(personRole.omit({ id: true, personId: true })),
+const createPersonSchema = exports.PersonScheme.extend({
+    roles: zod_1.default.array(exports.personRole.omit({ id: true, personId: true })),
 });
 //fechPersonResponse
-const personResponseSchema = PersonScheme.extend({
-    roles: zod_1.default.array(personRole.omit({ id: true, personId: true })),
+const personResponseSchema = exports.PersonScheme.extend({
+    roles: zod_1.default.array(exports.personRole.omit({ id: true, personId: true })),
     id: zod_1.default.number().int(),
 });
 //fetchManyPersonResonse
@@ -62,7 +62,7 @@ const personParamsSchema = zod_1.default.object({
     id: zod_1.default.number().int(),
 });
 //fetchOnePersonByIdResponse
-const onePersonResponseSchema = PersonScheme.merge(aditionalPersonSchema).extend({
+const onePersonResponseSchema = exports.PersonScheme.merge(aditionalPersonSchema).extend({
     id: zod_1.default.number().int(),
 });
 _a = (0, fastify_zod_1.buildJsonSchemas)({

@@ -36,6 +36,7 @@ model Person {
   sex          Person_sex
   phoneNumber  String?             @db.VarChar(255)
   nationality  String              @db.VarChar(255)
+  favorites    Favorites[]
   filmography  Filmography[]
   awards       PersonAwards[]
   image        PersonImage[]
@@ -111,8 +112,21 @@ model User {
   role        User_role?         @default(USER)
   avatar      String?            @db.VarChar(255)
   provider    String?            @default("email") @db.VarChar(255)
+  favorites   Favorites[]
   resetCodes  PasswordResetCode?
   userPersons Person[]           @relation("UserPerson")
+}
+
+model Favorites {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  isFavorite Boolean @default(false)
+  personId   Int
+  person     Person  @relation(fields: [personId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, personId])
+  @@index([personId], map: "Favorites_personId_fkey")
 }
 
 model PasswordResetCode {
@@ -121,6 +135,15 @@ model PasswordResetCode {
   code      String
   expiresAt DateTime
   user      User     @relation(fields: [email], references: [email], onDelete: Cascade, map: "PasswordResetCode_ibfk_1")
+}
+
+model News {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  poster      String?  @db.VarChar(255)
+  sourceNews  String?  @db.VarChar(255)
+  createdAt    DateTime @default(now())
 }
 
 enum PersonRole {
