@@ -122,17 +122,18 @@ export const checkFavorite = async (
 ) => {
   const { userId, personId } = req.query;
   try {
-  if (!userId ||!personId) {
-      return reply.status(400).send({ message: "Необходимы userId и personId" });
+    if (!userId || !personId) {
+      return reply
+        .status(400)
+        .send({ message: "Необходимы userId и personId" });
     }
     const favorite = await prisma.favorites.findFirst({
       where: { personId, userId },
-      select: {
-        isFavorite: true,
-      },
     });
-    console.log("favorite", favorite);
-    reply.status(200).send(favorite);
+    if (!favorite) {
+      return reply.status(200).send({ isFavorite: false });
+    }
+    reply.status(200).send({ isFavorite: true });
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при проверке избранности" });

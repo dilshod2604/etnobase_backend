@@ -110,16 +110,17 @@ const checkFavorite = (req, reply) => __awaiter(void 0, void 0, void 0, function
     const { userId, personId } = req.query;
     try {
         if (!userId || !personId) {
-            return reply.status(400).send({ message: "Необходимы userId и personId" });
+            return reply
+                .status(400)
+                .send({ message: "Необходимы userId и personId" });
         }
         const favorite = yield prisma_1.prisma.favorites.findFirst({
             where: { personId, userId },
-            select: {
-                isFavorite: true,
-            },
         });
-        console.log("favorite", favorite);
-        reply.status(200).send(favorite);
+        if (!favorite) {
+            return reply.status(200).send({ isFavorite: false });
+        }
+        reply.status(200).send({ isFavorite: true });
     }
     catch (error) {
         console.error(error);
