@@ -122,8 +122,8 @@ model Favorites {
   userId     Int
   isFavorite Boolean @default(false)
   personId   Int
-  person     Person  @relation(fields: [personId], references: [id])
-  user       User    @relation(fields: [userId], references: [id])
+  person     Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, personId])
   @@index([personId], map: "Favorites_personId_fkey")
@@ -143,7 +143,7 @@ model News {
   description String   @db.VarChar(255)
   poster      String?  @db.VarChar(255)
   sourceNews  String?  @db.VarChar(255)
-  createdAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
 }
 
 enum PersonRole {
