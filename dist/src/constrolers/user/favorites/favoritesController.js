@@ -9,14 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkFavorite = exports.getFavorites = exports.removeAllFavorites = exports.removeFavorites = exports.addFavorites = void 0;
+exports.getFavorites = exports.removeAllFavorites = exports.removeFavorites = exports.addFavorites = void 0;
 const prisma_1 = require("../../../utils/prisma");
+//checkFavoriteExists
+const checkFavoriteExists = (userId, personId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.prisma.favorites.findFirst({ where: { userId, personId } });
+});
 const addFavorites = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, personId } = req.body;
     try {
-        const existingFavorites = yield prisma_1.prisma.favorites.findFirst({
-            where: { personId, userId },
-        });
+        const existingFavorites = yield checkFavoriteExists(userId, personId);
         if (existingFavorites) {
             return reply.status(400).send({
                 message: "Такой персонаж  уже есть в избранном",
@@ -36,9 +38,7 @@ exports.addFavorites = addFavorites;
 const removeFavorites = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, personId } = req.body;
     try {
-        const existingFavorites = yield prisma_1.prisma.favorites.findFirst({
-            where: { personId, userId },
-        });
+        const existingFavorites = yield checkFavoriteExists(userId, personId);
         if (!existingFavorites) {
             return reply.status(404).send({
                 message: "Такой персонаж не найдена в избранном",
@@ -58,17 +58,14 @@ exports.removeFavorites = removeFavorites;
 const removeAllFavorites = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.body;
     try {
-        const existingFavorites = yield prisma_1.prisma.favorites.findFirst({
+        const { count } = yield prisma_1.prisma.favorites.deleteMany({
             where: { userId },
         });
-        if (!existingFavorites) {
+        if (count === 0) {
             return reply.status(404).send({
                 message: "У пользователя нет избранного",
             });
         }
-        yield prisma_1.prisma.favorites.deleteMany({
-            where: { userId },
-        });
         return reply.status(200).send({ message: "Все избранные удалены" });
     }
     catch (error) {
@@ -106,25 +103,3 @@ const getFavorites = (req, reply) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getFavorites = getFavorites;
-const checkFavorite = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, personId } = req.query;
-    try {
-        if (!userId || !personId) {
-            return reply
-                .status(400)
-                .send({ message: "Необходимы userId и personId" });
-        }
-        const favorite = yield prisma_1.prisma.favorites.findFirst({
-            where: { personId, userId },
-        });
-        if (!favorite) {
-            return reply.status(200).send({ isFavorite: false });
-        }
-        reply.status(200).send({ isFavorite: true });
-    }
-    catch (error) {
-        console.error(error);
-        reply.status(500).send({ message: "Ошибка при проверке избранности" });
-    }
-});
-exports.checkFavorite = checkFavorite;

@@ -47,24 +47,4 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, favoritesController_1.getFavorites);
-    fastify.get("/favorites/check", {
-        schema: {
-            querystring: {
-                type: "object",
-                properties: {
-                    userId: { type: "number" },
-                    personId: { type: "number" },
-                },
-                required: ["userId", "personId"],
-            },
-            response: {
-                200: {
-                    type: "object",
-                    properties: {
-                        isFavorite: { type: "boolean" },
-                    },
-                },
-            },
-        },
-    }, favoritesController_1.checkFavorite);
 }));

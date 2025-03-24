@@ -2,7 +2,6 @@ import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
   addFavorites,
-  checkFavorite,
   getFavorites,
   removeAllFavorites,
   removeFavorites,
@@ -56,28 +55,5 @@ export default fp(async (fastify: FastifyInstance) => {
     },
     getFavorites
   );
-  fastify.get(
-    "/favorites/check",
-    {
-      schema: {
-        querystring: {
-          type: "object",
-          properties: {
-            userId: { type: "number" },
-            personId: { type: "number" },
-          },
-          required: ["userId", "personId"],
-        },
-        response: {
-          200: {
-            type: "object",
-            properties: {
-              isFavorite: { type: "boolean" },
-            },
-          },
-        },
-      },
-    },
-    checkFavorite
-  );
+  
 });

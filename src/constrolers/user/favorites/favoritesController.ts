@@ -4,6 +4,10 @@ import {
   UserFavoritesInput,
 } from "../../../schemas/user/favorites/userFavoritesSchema";
 import { prisma } from "../../../utils/prisma";
+//checkFavoriteExists
+const checkFavoriteExists = async (userId: number, personId: number) => {
+  return await prisma.favorites.findFirst({ where: { userId, personId } });
+};
 
 export const addFavorites = async (
   req: FastifyRequest<{ Body: UserFavoritesInput }>,
@@ -11,9 +15,7 @@ export const addFavorites = async (
 ) => {
   const { userId, personId } = req.body;
   try {
-    const existingFavorites = await prisma.favorites.findFirst({
-      where: { personId, userId },
-    });
+    const existingFavorites = await checkFavoriteExists(userId, personId);
 
     if (existingFavorites) {
       return reply.status(400).send({
@@ -37,9 +39,7 @@ export const removeFavorites = async (
 ) => {
   const { userId, personId } = req.body;
   try {
-    const existingFavorites = await prisma.favorites.findFirst({
-      where: { personId, userId },
-    });
+    const existingFavorites = await checkFavoriteExists(userId, personId);
 
     if (!existingFavorites) {
       return reply.status(404).send({
@@ -64,19 +64,14 @@ export const removeAllFavorites = async (
   const { userId } = req.body;
 
   try {
-    const existingFavorites = await prisma.favorites.findFirst({
+    const { count } = await prisma.favorites.deleteMany({
       where: { userId },
     });
-
-    if (!existingFavorites) {
+    if (count === 0) {
       return reply.status(404).send({
         message: "У пользователя нет избранного",
       });
     }
-
-    await prisma.favorites.deleteMany({
-      where: { userId },
-    });
 
     return reply.status(200).send({ message: "Все избранные удалены" });
   } catch (error) {
@@ -114,28 +109,5 @@ export const getFavorites = async (
   } catch (error) {
     console.error("Ошибка при получении избранного:", error);
     return reply.status(500).send({ message: "Внутренняя ошибка сервера" });
-  }
-};
-export const checkFavorite = async (
-  req: FastifyRequest<{ Querystring: UserFavoritesInput }>,
-  reply: FastifyReply
-) => {
-  const { userId, personId } = req.query;
-  try {
-    if (!userId || !personId) {
-      return reply
-        .status(400)
-        .send({ message: "Необходимы userId и personId" });
-    }
-    const favorite = await prisma.favorites.findFirst({
-      where: { personId, userId },
-    });
-    if (!favorite) {
-      return reply.status(200).send({ isFavorite: false });
-    }
-    reply.status(200).send({ isFavorite: true });
-  } catch (error) {
-    console.error(error);
-    reply.status(500).send({ message: "Ошибка при проверке избранности" });
   }
 };
