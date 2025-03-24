@@ -44,7 +44,6 @@ export default fp(async (fastify: FastifyInstance) => {
     "/news/:id",
     {
       schema: {
-        body: $ref("updateNewsSchema"),
         response: {
           201: {
             type: "object",

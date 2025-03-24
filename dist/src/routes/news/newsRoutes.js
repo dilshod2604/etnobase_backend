@@ -40,7 +40,6 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
     }, newsController_1.updateNews);
     fastify.delete("/news/:id", {
         schema: {
-            body: (0, newsSchema_1.$ref)("updateNewsSchema"),
             response: {
                 201: {
                     type: "object",
