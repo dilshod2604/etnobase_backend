@@ -13,18 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
-const fuqController_1 = require("../../constrolers/FUQ/fuqController");
-const fuqSchema_1 = require("../../schemas/FUQ/fuqSchema");
+const faqController_1 = require("../../constrolers/FAQ/faqController");
+const faqSchema_1 = require("../../schemas/FAQ/faqSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
-    fastify.post("/fuq", {
+    fastify.post("/faq", {
         schema: {
-            body: (0, fuqSchema_1.$ref)("createFUQSchema"),
+            body: (0, faqSchema_1.$ref)("createFAQSchema"),
             response: {
-                200: (0, fuqSchema_1.$ref)("fuqResponseSchema"),
+                200: (0, faqSchema_1.$ref)("faqResponseSchema"),
             },
         },
-    }, fuqController_1.createFUQ);
-    fastify.put("/fuq/:id", {
+    }, faqController_1.createFAQ);
+    fastify.put("/faq/:id", {
         schema: {
             params: {
                 type: "object",
@@ -34,10 +34,10 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 required: ["id"],
             },
             response: {
-                200: (0, fuqSchema_1.$ref)("fuqResponseSchema"),
+                200: (0, faqSchema_1.$ref)("faqResponseSchema"),
             },
         },
-    }, fuqController_1.updateFUQ);
+    }, faqController_1.updateFAQ);
     fastify.delete("/fuq/:id", {
         schema: {
             params: {
@@ -48,15 +48,15 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 required: ["id"],
             },
             response: {
-                200: (0, fuqSchema_1.$ref)("fuqResponseSchema"),
+                200: (0, faqSchema_1.$ref)("faqResponseSchema"),
             },
         },
-    }, fuqController_1.deleteFUQ);
-    fastify.get("/fuq", {
+    }, faqController_1.deleteFAQ);
+    fastify.get("/faq", {
         schema: {
             response: {
-                200: (0, fuqSchema_1.$ref)("fetchAllFUQSchemas"),
+                200: (0, faqSchema_1.$ref)("fetchAllFAQSchemas"),
             },
         },
-    }, fuqController_1.fetchFUQ);
+    }, faqController_1.fetchFAQ);
 }));

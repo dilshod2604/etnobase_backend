@@ -146,7 +146,7 @@ model News {
   createdAt   DateTime @default(now())
 }
 
-model FUQ {
+model FAQ {
   id        Int    @id @default(autoincrement())
   question String @db.Text
   answer    String @db.Text

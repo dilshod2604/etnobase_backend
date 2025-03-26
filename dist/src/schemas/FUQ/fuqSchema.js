@@ -14,7 +14,7 @@ const updateFUQSchema = fuqSchema.omit({ id: true });
 const fuqResponseSchema = zod_1.z.object({
     message: zod_1.z.string(),
 });
-const fetchAllFUQSchemas = zod_1.z.array(fuqResponseSchema);
+const fetchAllFUQSchemas = zod_1.z.array(fuqSchema);
 _a = (0, fastify_zod_1.buildJsonSchemas)({
     createFUQSchema,
     updateFUQSchema,

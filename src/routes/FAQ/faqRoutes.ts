@@ -1,28 +1,28 @@
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
-  createFUQ,
-  deleteFUQ,
-  fetchFUQ,
-  updateFUQ,
-} from "../../constrolers/FUQ/fuqController";
-import { $ref } from "../../schemas/FUQ/fuqSchema";
+  createFAQ,
+  deleteFAQ,
+  fetchFAQ,
+  updateFAQ,
+} from "../../constrolers/FAQ/faqController";
+import { $ref } from "../../schemas/FAQ/faqSchema";
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
-    "/fuq",
+    "/faq",
     {
       schema: {
-        body: $ref("createFUQSchema"),
+        body: $ref("createFAQSchema"),
         response: {
-          200: $ref("fuqResponseSchema"),
+          200: $ref("faqResponseSchema"),
         },
       },
     },
-    createFUQ
+    createFAQ
   );
   fastify.put(
-    "/fuq/:id",
+    "/faq/:id",
     {
       schema: {
         params: {
@@ -33,11 +33,11 @@ export default fp(async (fastify: FastifyInstance) => {
           required: ["id"],
         },
         response: {
-          200: $ref("fuqResponseSchema"),
+          200: $ref("faqResponseSchema"),
         },
       },
     },
-    updateFUQ
+    updateFAQ
   );
   fastify.delete(
     "/fuq/:id",
@@ -51,21 +51,21 @@ export default fp(async (fastify: FastifyInstance) => {
           required: ["id"],
         },
         response: {
-          200: $ref("fuqResponseSchema"),
+          200: $ref("faqResponseSchema"),
         },
       },
     },
-    deleteFUQ
+    deleteFAQ
   );
   fastify.get(
-    "/fuq",
+    "/faq",
     {
       schema: {
         response: {
-          200: $ref("createFUQSchema"),
+          200: $ref("fetchAllFAQSchemas"),
         },
       },
     },
-    fetchFUQ
+    fetchFAQ
   );
 });
