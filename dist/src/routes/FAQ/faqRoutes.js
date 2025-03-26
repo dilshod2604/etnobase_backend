@@ -38,7 +38,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, faqController_1.updateFAQ);
-    fastify.delete("/fuq/:id", {
+    fastify.delete("/faq/:id", {
         schema: {
             params: {
                 type: "object",

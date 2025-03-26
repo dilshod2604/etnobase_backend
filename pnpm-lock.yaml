@@ -45,7 +45,7 @@ importers:
         specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.7.3))(typescript@5.7.3)
       '@vercel/node':
-        specifier: ^5.1.7
+        specifier: ^5.1.8
         version: 5.1.8
       axios:
         specifier: ^1.8.3

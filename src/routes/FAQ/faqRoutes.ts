@@ -40,7 +40,7 @@ export default fp(async (fastify: FastifyInstance) => {
     updateFAQ
   );
   fastify.delete(
-    "/fuq/:id",
+    "/faq/:id",
     {
       schema: {
         params: {
