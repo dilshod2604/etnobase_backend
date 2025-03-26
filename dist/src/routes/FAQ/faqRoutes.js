@@ -33,6 +33,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 },
                 required: ["id"],
             },
+            body: (0, faqSchema_1.$ref)("updateFAQSchema"),
             response: {
                 200: (0, faqSchema_1.$ref)("faqResponseSchema"),
             },

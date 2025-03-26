@@ -32,6 +32,7 @@ export default fp(async (fastify: FastifyInstance) => {
           },
           required: ["id"],
         },
+        body: $ref("updateFAQSchema"),
         response: {
           200: $ref("faqResponseSchema"),
         },
