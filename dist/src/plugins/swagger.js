@@ -29,6 +29,7 @@ const AuthSchemas_1 = require("../schemas/authScemas/AuthSchemas");
 const userAvatarSchema_1 = require("../schemas/user/avatars/userAvatarSchema");
 const userFavoritesSchema_1 = require("../schemas/user/favorites/userFavoritesSchema");
 const newsSchema_1 = require("../schemas/news/newsSchema");
+const fuqSchema_1 = require("../schemas/FUQ/fuqSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     const schemas = [
         ...personSchema_1.personSchema,
@@ -45,6 +46,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         ...userAvatarSchema_1.UserAvatarSchema,
         ...userFavoritesSchema_1.UserFavoritesSchema,
         ...newsSchema_1.NewsSchema,
+        ...fuqSchema_1.FUQSchema,
     ];
     schemas.forEach((schema) => {
         if (!fastify.getSchema(schema.$id)) {

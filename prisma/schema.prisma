@@ -146,6 +146,12 @@ model News {
   createdAt   DateTime @default(now())
 }
 
+model FUQ {
+  id        Int    @id @default(autoincrement())
+  question String @db.Text
+  answer    String @db.Text
+}
+
 enum PersonRole {
   PRODUCTION_DESIGNER
   EXECUTIVE_PRODUCER
