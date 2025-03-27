@@ -45,6 +45,7 @@ model Person {
   video        PersonVideo[]
   theater      theater[]
   personUsers  User[]              @relation("UserPerson")
+  orders       Order[]
 }
 
 model PersonRoleMapping {
@@ -115,6 +116,21 @@ model User {
   favorites   Favorites[]
   resetCodes  PasswordResetCode?
   userPersons Person[]           @relation("UserPerson")
+  orders     Order[]
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  senderName  String   @db.VarChar(255) 
+  phoneNumber String   @db.VarChar(255)
+  message     String   @db.Text
+  orderStatus OrderStatus? @default(PENDING)
+  read        Boolean?  @default(false)
+  personId   Int
+  userId      Int
+  createdAt   DateTime @default(now())
+  person      Person  @relation(fields: [personId], references: [id],onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id],onDelete: Cascade)
 }
 
 model Favorites {
@@ -198,4 +214,10 @@ enum User_role {
 enum Person_type {
   AMATEUR
   PROFESSIONAL
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
 }
