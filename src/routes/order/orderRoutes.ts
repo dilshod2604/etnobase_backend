@@ -1,3 +1,4 @@
+import { getOrderById } from './../../constrolers/order/orderController';
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
@@ -71,7 +72,7 @@ export default fp(async (fastify: FastifyInstance) => {
     deleteOrders
   );
   fastify.get(
-    "/order/:userId",
+    "/orders/:userId",
     {
       schema: {
         params: {
@@ -84,6 +85,20 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     getOrdersByUserId
+  );fastify.get(
+    "/order/:id",
+    {
+      schema: {
+        params: {
+          type: "object",
+          properties: {
+            id: { type: "number" },
+          },
+          required: ["id"],
+        },
+      },
+    },
+    getOrderById
   );
   fastify.get("/order", getOrdersByUserId);
 });

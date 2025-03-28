@@ -31,6 +31,7 @@ const userFavoritesSchema_1 = require("../schemas/user/favorites/userFavoritesSc
 const newsSchema_1 = require("../schemas/news/newsSchema");
 const faqSchema_1 = require("../schemas/FAQ/faqSchema");
 const orderSchema_1 = require("../schemas/order/orderSchema");
+const commentSchema_1 = require("../schemas/comment/commentSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     const schemas = [
         ...personSchema_1.personSchema,
@@ -48,7 +49,8 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
         ...userFavoritesSchema_1.UserFavoritesSchema,
         ...newsSchema_1.NewsSchema,
         ...faqSchema_1.FAQSchema,
-        ...orderSchema_1.OrderSchema
+        ...orderSchema_1.OrderSchema,
+        ...commentSchema_1.CommentSchema,
     ];
     schemas.forEach((schema) => {
         if (!fastify.getSchema(schema.$id)) {

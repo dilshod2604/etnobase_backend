@@ -12,76 +12,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const orderController_1 = require("./../../constrolers/order/orderController");
 const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
-const orderController_2 = require("../../constrolers/order/orderController");
-const orderSchema_1 = require("../../schemas/order/orderSchema");
+const commentsController_1 = require("../../constrolers/comment/commentsController");
+const commentSchema_1 = require("../../schemas/comment/commentSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
-    fastify.post("/order", {
+    fastify.post("/comments", {
+        preHandler: [fastify.authJWT],
         schema: {
-            body: (0, orderSchema_1.$ref)("createOrderSchema"),
+            body: (0, commentSchema_1.$ref)("AddCommentsSchema"),
             response: {
-                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
+                200: (0, commentSchema_1.$ref)("CommentResponseSchema"),
             },
         },
-    }, orderController_2.makeOrder);
-    fastify.put("/order/:id", {
+    }, commentsController_1.addComment);
+    fastify.post("/coments/:id/:reaction/:userID", {
+        preHandler: [fastify.authJWT],
         schema: {
             params: {
                 type: "object",
                 properties: {
                     id: { type: "number" },
-                },
-                required: ["id"],
-            },
-            body: (0, orderSchema_1.$ref)("updateOrdersStatusSchema"),
-            response: {
-                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
-            },
-        },
-    }, orderController_2.updateOrderStatus);
-    fastify.delete("/order/:id", {
-        schema: {
-            params: {
-                type: "object",
-                properties: {
-                    id: { type: "number" },
-                },
-                required: ["id"],
-            },
-            response: {
-                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
-            },
-        },
-    }, orderController_2.deleteOrder);
-    fastify.delete("/order/delete-all", {
-        schema: {
-            response: {
-                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
-            },
-        },
-    }, orderController_2.deleteOrders);
-    fastify.get("/orders/:userId", {
-        schema: {
-            params: {
-                type: "object",
-                properties: {
+                    reaction: { type: "string", enum: ["like", "dislike"] },
                     userId: { type: "number" },
                 },
-                required: ["userId"],
             },
         },
-    }, orderController_2.getOrdersByUserId);
-    fastify.get("/order/:id", {
+    }, commentsController_1.likeComment);
+    fastify.delete("/coments/:id/:reaction/:userID", {
+        preHandler: [fastify.authJWT],
         schema: {
             params: {
                 type: "object",
                 properties: {
                     id: { type: "number" },
+                    reaction: { type: "string", enum: ["like", "dislike"] },
+                    userId: { type: "number" },
                 },
-                required: ["id"],
             },
         },
-    }, orderController_1.getOrderById);
-    fastify.get("/order", orderController_2.getOrdersByUserId);
+    }, commentsController_1.disLikeComments);
+    fastify.get("/comments/:newsId", {
+        schema: {
+            params: {
+                type: "object",
+                properties: {
+                    newsId: { type: "number" },
+                },
+            },
+        },
+    }, commentsController_1.fetchNewsComments);
+    fastify.get("/comments", commentsController_1.fetchAllComments);
 }));

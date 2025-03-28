@@ -118,11 +118,49 @@ export const getOrdersByUserId = async (
   }
 };
 
+export const getOrderById = async (
+  req: FastifyRequest<{ Params: { id: number } }>,
+  reply: FastifyReply
+) => {
+  const { id } = req.params;
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        id,
+      },
+      include: {
+        person: {
+          omit: {
+            phoneNumber: true,
+          },
+          include: {
+            roles: {
+              select: {
+                role: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (orders.length === 0) {
+      return reply.status(404).send({ message: "Заказы не найдены" });
+    }
+    reply.status(200).send(orders);
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при получении заказов" });
+  }
+};
 export const getOrders = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const orders = await prisma.order.findMany({
       include: {
-        person: true,
+        person: {
+          omit: {
+            phoneNumber: true,
+          },
+        },
       },
     });
     reply.status(200).send(orders);

@@ -18,6 +18,7 @@ import { UserFavoritesSchema } from "../schemas/user/favorites/userFavoritesSche
 import { NewsSchema } from "../schemas/news/newsSchema";
 import { FAQSchema } from "../schemas/FAQ/faqSchema";
 import { OrderSchema } from "../schemas/order/orderSchema";
+import { CommentSchema } from "../schemas/comment/commentSchema";
 
 export default fp(async (fastify: FastifyInstance) => {
   const schemas = [
@@ -36,7 +37,8 @@ export default fp(async (fastify: FastifyInstance) => {
     ...UserFavoritesSchema,
     ...NewsSchema,
     ...FAQSchema,
-    ...OrderSchema
+    ...OrderSchema,
+    ...CommentSchema,
   ];
 
   schemas.forEach((schema) => {

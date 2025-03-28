@@ -38,6 +38,7 @@ model Person {
   nationality  String              @db.VarChar(255)
   favorites    Favorites[]
   filmography  Filmography[]
+  orders       Order[]
   awards       PersonAwards[]
   image        PersonImage[]
   roles        PersonRoleMapping[]
@@ -45,7 +46,6 @@ model Person {
   video        PersonVideo[]
   theater      theater[]
   personUsers  User[]              @relation("UserPerson")
-  orders       Order[]
 }
 
 model PersonRoleMapping {
@@ -106,31 +106,36 @@ model PersonSckills {
 }
 
 model User {
-  id          Int                @id @default(autoincrement())
-  name        String?            @db.VarChar(255)
-  email       String             @unique(map: "email") @db.VarChar(255)
-  password    String             @db.VarChar(255)
-  role        User_role?         @default(USER)
-  avatar      String?            @db.VarChar(255)
-  provider    String?            @default("email") @db.VarChar(255)
-  favorites   Favorites[]
-  resetCodes  PasswordResetCode?
-  userPersons Person[]           @relation("UserPerson")
-  orders     Order[]
+  id              Int                @id @default(autoincrement())
+  name            String?            @db.VarChar(255)
+  email           String             @unique(map: "email") @db.VarChar(255)
+  password        String             @db.VarChar(255)
+  role            User_role?         @default(USER)
+  avatar          String?            @db.VarChar(255)
+  provider        String?            @default("email") @db.VarChar(255)
+  favorites       Favorites[]
+  comments        NewsComment[]
+  newsCommentLike NewsCommentLike[] 
+  orders          Order[]
+  resetCodes      PasswordResetCode?
+  userPersons     Person[]           @relation("UserPerson")
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
-  senderName  String   @db.VarChar(255) 
-  phoneNumber String   @db.VarChar(255)
-  message     String   @db.Text
-  orderStatus OrderStatus? @default(PENDING)
-  read        Boolean?  @default(false)
-  personId   Int
+  id          Int          @id @default(autoincrement())
   userId      Int
-  createdAt   DateTime @default(now())
-  person      Person  @relation(fields: [personId], references: [id],onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id],onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  personId    Int
+  orderStatus OrderStatus? @default(PENDING)
+  message     String       @db.Text
+  phoneNumber String       @db.VarChar(255)
+  read        Boolean?     @default(false)
+  senderName  String       @db.VarChar(255)
+  person      Person       @relation(fields: [personId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([personId], map: "Order_personId_fkey")
+  @@index([userId], map: "Order_userId_fkey")
 }
 
 model Favorites {
@@ -154,18 +159,48 @@ model PasswordResetCode {
 }
 
 model News {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255)
-  description String   @db.VarChar(255)
-  poster      String?  @db.VarChar(255)
-  sourceNews  String?  @db.VarChar(255)
-  createdAt   DateTime @default(now())
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(255)
+  description String        @db.VarChar(255)
+  poster      String?       @db.VarChar(255)
+  sourceNews  String?       @db.VarChar(255)
+  createdAt   DateTime      @default(now())
+  comments NewsComment[]
 }
 
 model FAQ {
-  id        Int    @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   question String @db.Text
-  answer    String @db.Text
+  answer   String @db.Text
+}
+
+model NewsComment {
+  id              Int               @id @default(autoincrement())
+  newsId          Int
+  userId          Int
+  text            String            @db.Text
+  likes           Int               @default(0)
+  dislikes        Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?         @db.DateTime(0)
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_1")
+  news            News              @relation(fields: [newsId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_2")
+  newsCommentLike NewsCommentLike[]
+
+  @@index([userId], map: "NewsComment_ibfk_1")
+  @@index([newsId], map: "newsId")
+}
+
+model NewsCommentLike {
+  id        Int       @id @default(autoincrement())
+  userId      Int
+  commentId   Int
+  isLike      Boolean     @default(false)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsComment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+@@unique([userId, commentId], map: "NewsCommentLike_user_comment_unique")
+  @@index([commentId], map: "NewsCommentLike_ibfk_2")
 }
 
 enum PersonRole {

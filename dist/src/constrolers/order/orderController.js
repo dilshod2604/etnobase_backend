@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.getOrdersByUserId = exports.updateOrderStatus = exports.deleteOrders = exports.deleteOrder = exports.makeOrder = void 0;
+exports.getOrders = exports.getOrderById = exports.getOrdersByUserId = exports.updateOrderStatus = exports.deleteOrders = exports.deleteOrder = exports.makeOrder = void 0;
 const prisma_1 = require("../../utils/prisma");
 const makeOrder = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, personId, senderName, message, phoneNumber } = req.body;
@@ -117,11 +117,48 @@ const getOrdersByUserId = (req, reply) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getOrdersByUserId = getOrdersByUserId;
+const getOrderById = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const orders = yield prisma_1.prisma.order.findMany({
+            where: {
+                id,
+            },
+            include: {
+                person: {
+                    omit: {
+                        phoneNumber: true,
+                    },
+                    include: {
+                        roles: {
+                            select: {
+                                role: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (orders.length === 0) {
+            return reply.status(404).send({ message: "Заказы не найдены" });
+        }
+        reply.status(200).send(orders);
+    }
+    catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка при получении заказов" });
+    }
+});
+exports.getOrderById = getOrderById;
 const getOrders = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orders = yield prisma_1.prisma.order.findMany({
             include: {
-                person: true,
+                person: {
+                    omit: {
+                        phoneNumber: true,
+                    },
+                },
             },
         });
         reply.status(200).send(orders);
