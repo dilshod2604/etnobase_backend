@@ -53,6 +53,18 @@ export const deleteOrder = async (
     console.error(error);
   }
 };
+
+export const deleteOrders = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    await prisma.order.deleteMany();
+    reply.status(200).send({ message: "Заказы успешно удалено" });
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const updateOrderStatus = async (
   req: FastifyRequest<{ Params: { id: number }; Body: UpdateOrderInputSchema }>,
   reply: FastifyReply

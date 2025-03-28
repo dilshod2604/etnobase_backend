@@ -53,6 +53,13 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, orderController_1.deleteOrder);
+    fastify.delete("/order/delete-all", {
+        schema: {
+            response: {
+                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
+            },
+        },
+    }, orderController_1.deleteOrders);
     fastify.get("/order/:userId", {
         schema: {
             params: {

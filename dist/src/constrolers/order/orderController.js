@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrders = exports.getOrdersByUserId = exports.updateOrderStatus = exports.deleteOrder = exports.makeOrder = void 0;
+exports.getOrders = exports.getOrdersByUserId = exports.updateOrderStatus = exports.deleteOrders = exports.deleteOrder = exports.makeOrder = void 0;
 const prisma_1 = require("../../utils/prisma");
 const makeOrder = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, personId, senderName, message, phoneNumber } = req.body;
@@ -57,6 +57,16 @@ const deleteOrder = (req, reply) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteOrder = deleteOrder;
+const deleteOrders = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield prisma_1.prisma.order.deleteMany();
+        reply.status(200).send({ message: "Заказы успешно удалено" });
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.deleteOrders = deleteOrders;
 const updateOrderStatus = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { orderStatus } = req.body;

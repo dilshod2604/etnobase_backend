@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
   deleteOrder,
+  deleteOrders,
   getOrdersByUserId,
   makeOrder,
   updateOrderStatus,
@@ -57,6 +58,17 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     deleteOrder
+  );
+  fastify.delete(
+    "/order/delete-all",
+    {
+      schema: {
+        response: {
+          200: $ref("orderResponseSchema"),
+        },
+      },
+    },
+    deleteOrders
   );
   fastify.get(
     "/order/:userId",
