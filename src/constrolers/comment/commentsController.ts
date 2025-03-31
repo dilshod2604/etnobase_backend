@@ -30,6 +30,7 @@ export const handleLikeDislike = async (
     reaction: string;
     userId: number;
   };
+
   try {
     const [user, comment] = await Promise.all([
       prisma.user.findUnique({ where: { id: userId } }),
@@ -37,9 +38,7 @@ export const handleLikeDislike = async (
     ]);
 
     if (!user || !comment) {
-      return reply
-        .status(404)
-        .send({ message: "Пользователь или комментарий не найден" });
+      return reply.status(404).send({ message: "Пользователь или комментарий не найден" });
     }
 
     const isLike = reaction === "like";
@@ -49,45 +48,53 @@ export const handleLikeDislike = async (
       return reply.badRequest("Некорректная реакция");
     }
 
-    const existLike = await prisma.newsCommentLike.findUnique({
+    const existReaction = await prisma.newsCommentLike.findUnique({
       where: { userId_commentId: { userId, commentId: id } },
     });
 
     await prisma.$transaction(async (tx) => {
-      if (isLike || isDislike) {
-        await tx.newsCommentLike.upsert({
-          where: { userId_commentId: { userId, commentId: id } },
-          update: { isLike },
-          create: { userId, commentId: id, isLike },
-        });
-      } else {
+      if (existReaction) {
         await tx.newsCommentLike.delete({
           where: { userId_commentId: { userId, commentId: id } },
         });
+
+        await tx.newsComment.update({
+          where: { id },
+          data: {
+            likes: { decrement: existReaction.isLike ? 1 : 0 },
+            dislikes: { decrement: existReaction.isLike ? 0 : 1 },
+          },
+        });
+
+        if (existReaction.isLike !== isLike) {
+          await tx.newsCommentLike.create({
+            data: { userId, commentId: id, isLike },
+          });
+
+          await tx.newsComment.update({
+            where: { id },
+            data: {
+              likes: { increment: isLike ? 1 : 0 },
+              dislikes: { increment: isLike ? 0 : 1 },
+            },
+          });
+        }
+      } else {
+        await tx.newsCommentLike.create({
+          data: { userId, commentId: id, isLike },
+        });
+
+        await tx.newsComment.update({
+          where: { id },
+          data: {
+            likes: { increment: isLike ? 1 : 0 },
+            dislikes: { increment: isLike ? 0 : 1 },
+          },
+        });
       }
-
-      // Обновляем счетчики
-      let likesDelta = 0;
-      let dislikesDelta = 0;
-
-      if (existLike) {
-        if (existLike.isLike) likesDelta -= 1;
-        else dislikesDelta -= 1;
-      }
-
-      if (isLike) likesDelta += 1;
-      else if (isDislike) dislikesDelta += 1;
-
-      await tx.newsComment.update({
-        where: { id },
-        data: {
-          likes: { increment: likesDelta },
-          dislikes: { increment: dislikesDelta },
-        },
-      });
     });
 
-    return reply.status(204).send({ message: "OK" });
+    return reply.status(204).send();
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при обработке реакции" });
@@ -100,6 +107,11 @@ export const fetchAllComments = async (
   try {
     const comments = await prisma.newsComment.findMany({
       include: {
+        newsCommentLike: {
+          select: {
+            isLike: true,
+          },
+        },
         user: {
           select: {
             id: true,
