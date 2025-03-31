@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteComment = exports.fetchNewsComments = exports.fetchAllComments = exports.disLikeComments = exports.likeComment = exports.addComment = void 0;
+exports.deleteComment = exports.fetchNewsComments = exports.fetchAllComments = exports.handleLikeDislike = exports.addComment = void 0;
 const prisma_1 = require("../../utils/prisma");
 const addComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { newsId, text, userId } = req.body;
@@ -29,101 +29,68 @@ const addComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.addComment = addComment;
-const likeComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, reaction, userId } = req.params;
-    console.log(id, reaction, userId);
-    const isLike = reaction === "like";
+const handleLikeDislike = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, reaction, userId } = req.body;
     try {
-        const user = yield prisma_1.prisma.user.findFirst({
-            where: { id: userId },
-        });
-        if (!user) {
-            return reply.status(404).send({ message: "Пользователь не найден" });
+        const [user, comment] = yield Promise.all([
+            prisma_1.prisma.user.findUnique({ where: { id: userId } }),
+            prisma_1.prisma.newsComment.findUnique({ where: { id } }),
+        ]);
+        if (!user || !comment) {
+            return reply
+                .status(404)
+                .send({ message: "Пользователь или комментарий не найден" });
+        }
+        const isLike = reaction === "like";
+        const isDislike = reaction === "dislike";
+        if (!isLike && !isDislike) {
+            return reply.badRequest("Некорректная реакция");
         }
         const existLike = yield prisma_1.prisma.newsCommentLike.findUnique({
-            where: {
-                userId_commentId: {
-                    commentId: id,
-                    userId,
-                },
-            },
-        });
-        if (existLike && existLike.isLike === isLike) {
-            return reply.badRequest("Вы уже лайкнули");
-        }
-        yield prisma_1.prisma.newsCommentLike.upsert({
-            where: {
-                userId_commentId: {
-                    userId,
-                    commentId: id,
-                },
-            },
-            update: {
-                isLike,
-            },
-            create: {
-                userId,
-                commentId: id,
-                isLike,
-            },
-        });
-        if (existLike) {
-            if (isLike) {
-                yield prisma_1.prisma.$executeRaw `UPDATE comments SET dislikes = dislikes - 1, likes = likes + 1  WHERE id = ${id}`;
-            }
-            else {
-                yield prisma_1.prisma.$executeRaw `UPDATE comments SET dislikes = dislikes + 1, likes = likes - 1  WHERE id = ${id}`;
-            }
-        }
-        else {
-            if (isLike) {
-                yield prisma_1.prisma.$executeRaw `UPDATE comments SET likes = likes + 1  WHERE id = ${id}`;
-            }
-            else {
-                yield prisma_1.prisma.$executeRaw `UPDATE comments SET dislikes = dislikes + 1 WHERE id = ${id}`;
-            }
-        }
-        return reply.status(204).send();
-    }
-    catch (error) {
-        console.error(error);
-        reply.status(500).send({ message: "Ошибка при лайки коментария" });
-    }
-});
-exports.likeComment = likeComment;
-const disLikeComments = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, reaction, userId } = req.params;
-    const isDislike = reaction === "dislike";
-    try {
-        const user = yield prisma_1.prisma.user.findFirst({
-            where: { id: userId },
-        });
-        if (!user) {
-            return reply.status(404).send({ message: "Пользователь не найден" });
-        }
-        yield prisma_1.prisma.newsCommentLike
-            .delete({
             where: { userId_commentId: { userId, commentId: id } },
-        })
-            .then(() => __awaiter(void 0, void 0, void 0, function* () {
-            let result = null;
-            if (isDislike) {
-                result =
-                    yield prisma_1.prisma.$executeRaw `UPDATE comments SET dislikes = dislikes - 1 WHERE id = ${id}`;
+        });
+        yield prisma_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+            if (isLike || isDislike) {
+                yield tx.newsCommentLike.upsert({
+                    where: { userId_commentId: { userId, commentId: id } },
+                    update: { isLike },
+                    create: { userId, commentId: id, isLike },
+                });
             }
             else {
-                result =
-                    yield prisma_1.prisma.$executeRaw `UPDATE comments SET likes = likes - 1 WHERE id = ${id}`;
+                yield tx.newsCommentLike.delete({
+                    where: { userId_commentId: { userId, commentId: id } },
+                });
             }
-            return reply.status(result > 0 ? 200 : 404).send();
+            // Обновляем счетчики
+            let likesDelta = 0;
+            let dislikesDelta = 0;
+            if (existLike) {
+                if (existLike.isLike)
+                    likesDelta -= 1;
+                else
+                    dislikesDelta -= 1;
+            }
+            if (isLike)
+                likesDelta += 1;
+            else if (isDislike)
+                dislikesDelta += 1;
+            yield tx.newsComment.update({
+                where: { id },
+                data: {
+                    likes: { increment: likesDelta },
+                    dislikes: { increment: dislikesDelta },
+                },
+            });
         }));
+        return reply.status(204).send({ message: "OK" });
     }
     catch (error) {
         console.error(error);
-        reply.status(500).send({ message: "Ошибка при дизлайки коментария" });
+        reply.status(500).send({ message: "Ошибка при обработке реакции" });
     }
 });
-exports.disLikeComments = disLikeComments;
+exports.handleLikeDislike = handleLikeDislike;
 const fetchAllComments = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const comments = yield prisma_1.prisma.newsComment.findMany({
@@ -138,6 +105,9 @@ const fetchAllComments = (req, reply) => __awaiter(void 0, void 0, void 0, funct
                 },
             },
         });
+        if (comments.length === 0) {
+            return reply.status(404).send({ message: "Коментарии не найдены" });
+        }
         reply.status(200).send(comments);
     }
     catch (error) {

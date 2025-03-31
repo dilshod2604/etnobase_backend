@@ -25,10 +25,10 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsController_1.addComment);
-    fastify.post("/coments/:id/:reaction/:userId", {
+    fastify.post("/comments/like", {
         preHandler: [fastify.authJWT],
         schema: {
-            params: {
+            body: {
                 type: "object",
                 properties: {
                     id: { type: "number" },
@@ -37,20 +37,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 },
             },
         },
-    }, commentsController_1.likeComment);
-    fastify.delete("/coments/:id/:reaction/:userID", {
-        preHandler: [fastify.authJWT],
-        schema: {
-            params: {
-                type: "object",
-                properties: {
-                    id: { type: "number" },
-                    reaction: { type: "string", enum: ["like", "dislike"] },
-                    userId: { type: "number" },
-                },
-            },
-        },
-    }, commentsController_1.disLikeComments);
+    }, commentsController_1.handleLikeDislike);
     fastify.delete("/comments/:id/:userId", {
         schema: {
             params: {

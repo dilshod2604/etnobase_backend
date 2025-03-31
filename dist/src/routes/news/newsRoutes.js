@@ -64,13 +64,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             // },
         },
     }, newsController_1.fetchNewsById);
-    fastify.get("/news", {
-        schema: {
-            response: {
-                200: (0, newsSchema_1.$ref)("getAllNewsSchemas"),
-            },
-        },
-    }, newsController_1.fetchNews);
+    fastify.get("/news", newsController_1.fetchNews);
     fastify.post("/news/poster", {
         schema: {
             response: {

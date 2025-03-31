@@ -3,10 +3,9 @@ import fp from "fastify-plugin";
 import {
   addComment,
   deleteComment,
-  disLikeComments,
   fetchAllComments,
   fetchNewsComments,
-  likeComment,
+  handleLikeDislike,
 } from "../../constrolers/comment/commentsController";
 import { $ref } from "../../schemas/comment/commentSchema";
 
@@ -27,11 +26,11 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   fastify.post(
-    "/coments/:id/:reaction/:userId",
+    "/comments/like",
     {
       preHandler: [fastify.authJWT],
       schema: {
-        params: {
+        body: {
           type: "object",
           properties: {
             id: { type: "number" },
@@ -41,24 +40,7 @@ export default fp(async (fastify: FastifyInstance) => {
         },
       },
     },
-    likeComment
-  );
-  fastify.delete(
-    "/coments/:id/:reaction/:userID",
-    {
-      preHandler: [fastify.authJWT],
-      schema: {
-        params: {
-          type: "object",
-          properties: {
-            id: { type: "number" },
-            reaction: { type: "string", enum: ["like", "dislike"] },
-            userId: { type: "number" },
-          },
-        },
-      },
-    },
-    disLikeComments
+    handleLikeDislike
   );
   fastify.delete(
     "/comments/:id/:userId",

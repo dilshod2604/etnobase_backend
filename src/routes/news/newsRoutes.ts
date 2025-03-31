@@ -74,17 +74,7 @@ export default fp(async (fastify: FastifyInstance) => {
     },
     fetchNewsById
   );
-  fastify.get(
-    "/news",
-    {
-      schema: {
-        response: {
-          200: $ref("getAllNewsSchemas"),
-        },
-      },
-    },
-    fetchNews
-  );
+  fastify.get("/news", fetchNews);
   fastify.post(
     "/news/poster",
     {

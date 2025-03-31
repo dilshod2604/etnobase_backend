@@ -21,106 +21,76 @@ export const addComment = async (req: FastifyRequest, reply: FastifyReply) => {
     reply.status(500).send({ message: "Ошибка при добавлении коментария" });
   }
 };
-export const likeComment = async (req: FastifyRequest, reply: FastifyReply) => {
-  const { id, reaction, userId } = req.params as {
-    id: number;
-    reaction: string;
-    userId: number;
-  };
-  console.log(id, reaction, userId);
-  const isLike = reaction === "like";
-  try {
-    const user = await prisma.user.findFirst({
-      where: { id: userId },
-    });
-    if (!user) {
-      return reply.status(404).send({ message: "Пользователь не найден" });
-    }
-
-    const existLike = await prisma.newsCommentLike.findUnique({
-      where: {
-        userId_commentId: {
-          commentId: id,
-          userId,
-        },
-      },
-    });
-
-    if (existLike && existLike.isLike === isLike) {
-      return reply.badRequest("Вы уже лайкнули");
-    }
-
-    await prisma.newsCommentLike.upsert({
-      where: {
-        userId_commentId: {
-          userId,
-          commentId: id,
-        },
-      },
-      update: {
-        isLike,
-      },
-      create: {
-        userId,
-        commentId: id,
-        isLike,
-      },
-    });
-    if (existLike) {
-      if (isLike) {
-        await prisma.$executeRaw`UPDATE comments SET dislikes = dislikes - 1, likes = likes + 1  WHERE id = ${id}`;
-      } else {
-        await prisma.$executeRaw`UPDATE comments SET dislikes = dislikes + 1, likes = likes - 1  WHERE id = ${id}`;
-      }
-    } else {
-      if (isLike) {
-        await prisma.$executeRaw`UPDATE comments SET likes = likes + 1  WHERE id = ${id}`;
-      } else {
-        await prisma.$executeRaw`UPDATE comments SET dislikes = dislikes + 1 WHERE id = ${id}`;
-      }
-    }
-    return reply.status(204).send();
-  } catch (error) {
-    console.error(error);
-    reply.status(500).send({ message: "Ошибка при лайки коментария" });
-  }
-};
-
-export const disLikeComments = async (
+export const handleLikeDislike = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
-  const { id, reaction, userId } = req.params as {
+  const { id, reaction, userId } = req.body as {
     id: number;
     reaction: string;
     userId: number;
   };
-  const isDislike = reaction === "dislike";
   try {
-    const user = await prisma.user.findFirst({
-      where: { id: userId },
-    });
-    if (!user) {
-      return reply.status(404).send({ message: "Пользователь не найден" });
+    const [user, comment] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId } }),
+      prisma.newsComment.findUnique({ where: { id } }),
+    ]);
+
+    if (!user || !comment) {
+      return reply
+        .status(404)
+        .send({ message: "Пользователь или комментарий не найден" });
     }
-    await prisma.newsCommentLike
-      .delete({
-        where: { userId_commentId: { userId, commentId: id } },
-      })
-      .then(async () => {
-        let result = null;
-        if (isDislike) {
-          result =
-            await prisma.$executeRaw`UPDATE comments SET dislikes = dislikes - 1 WHERE id = ${id}`;
-        } else {
-          result =
-            await prisma.$executeRaw`UPDATE comments SET likes = likes - 1 WHERE id = ${id}`;
-        }
-        return reply.status(result > 0 ? 200 : 404).send();
+
+    const isLike = reaction === "like";
+    const isDislike = reaction === "dislike";
+
+    if (!isLike && !isDislike) {
+      return reply.badRequest("Некорректная реакция");
+    }
+
+    const existLike = await prisma.newsCommentLike.findUnique({
+      where: { userId_commentId: { userId, commentId: id } },
+    });
+
+    await prisma.$transaction(async (tx) => {
+      if (isLike || isDislike) {
+        await tx.newsCommentLike.upsert({
+          where: { userId_commentId: { userId, commentId: id } },
+          update: { isLike },
+          create: { userId, commentId: id, isLike },
+        });
+      } else {
+        await tx.newsCommentLike.delete({
+          where: { userId_commentId: { userId, commentId: id } },
+        });
+      }
+
+      // Обновляем счетчики
+      let likesDelta = 0;
+      let dislikesDelta = 0;
+
+      if (existLike) {
+        if (existLike.isLike) likesDelta -= 1;
+        else dislikesDelta -= 1;
+      }
+
+      if (isLike) likesDelta += 1;
+      else if (isDislike) dislikesDelta += 1;
+
+      await tx.newsComment.update({
+        where: { id },
+        data: {
+          likes: { increment: likesDelta },
+          dislikes: { increment: dislikesDelta },
+        },
       });
+    });
+
+    return reply.status(204).send({ message: "OK" });
   } catch (error) {
     console.error(error);
-    reply.status(500).send({ message: "Ошибка при дизлайки коментария" });
+    reply.status(500).send({ message: "Ошибка при обработке реакции" });
   }
 };
 export const fetchAllComments = async (
@@ -140,6 +110,9 @@ export const fetchAllComments = async (
         },
       },
     });
+    if (comments.length === 0) {
+      return reply.status(404).send({ message: "Коментарии не найдены" });
+    }
     reply.status(200).send(comments);
   } catch (error) {
     console.error(error);
