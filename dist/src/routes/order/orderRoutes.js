@@ -18,6 +18,7 @@ const orderController_2 = require("../../constrolers/order/orderController");
 const orderSchema_1 = require("../../schemas/order/orderSchema");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.post("/order", {
+        preHandler: [fastify.authJWT],
         schema: {
             body: (0, orderSchema_1.$ref)("createOrderSchema"),
             response: {
@@ -83,5 +84,26 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, orderController_1.getOrderById);
-    fastify.get("/order", orderController_2.getOrdersByUserId);
+    fastify.get("/orders", {
+        schema: {
+            response: {
+                200: (0, orderSchema_1.$ref)("getAllOrderSchemas"),
+            },
+        },
+    }, orderController_1.getOrders);
+    fastify.put("/order/read/:id", {
+        schema: {
+            params: {
+                type: "object",
+                properties: {
+                    id: { type: "number" },
+                },
+                required: ["id"],
+            },
+            body: (0, orderSchema_1.$ref)("updateOrderRead"),
+            response: {
+                200: (0, orderSchema_1.$ref)("orderResponseSchema"),
+            },
+        },
+    }, orderController_1.updateOrderRead);
 }));

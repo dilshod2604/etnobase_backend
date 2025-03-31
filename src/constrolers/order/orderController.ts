@@ -5,11 +5,14 @@ import {
 } from "../../schemas/order/orderSchema";
 import { prisma } from "../../utils/prisma";
 
-export const makeOrder = async (
-  req: FastifyRequest<{ Body: CreateOrderSchemaInput }>,
-  reply: FastifyReply
-) => {
-  const { userId, personId, senderName, message, phoneNumber } = req.body;
+export const makeOrder = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { userId, personId, senderName, message, phoneNumber } = req.body as {
+    userId: number;
+    personId: number;
+    senderName: string;
+    message: string;
+    phoneNumber: string;
+  };
   try {
     const person = await prisma.person.findFirst({
       where: {
@@ -117,14 +120,13 @@ export const getOrdersByUserId = async (
     reply.status(500).send({ message: "Ошибка при получении заказов" });
   }
 };
-
 export const getOrderById = async (
   req: FastifyRequest<{ Params: { id: number } }>,
   reply: FastifyReply
 ) => {
   const { id } = req.params;
   try {
-    const orders = await prisma.order.findMany({
+    const order= await prisma.order.findFirst({
       where: {
         id,
       },
@@ -143,10 +145,7 @@ export const getOrderById = async (
         },
       },
     });
-    if (orders.length === 0) {
-      return reply.status(404).send({ message: "Заказы не найдены" });
-    }
-    reply.status(200).send(orders);
+    reply.status(200).send(order);
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при получении заказов" });
@@ -154,18 +153,31 @@ export const getOrderById = async (
 };
 export const getOrders = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const orders = await prisma.order.findMany({
-      include: {
-        person: {
-          omit: {
-            phoneNumber: true,
-          },
-        },
-      },
-    });
+    const orders = await prisma.order.findMany();
     reply.status(200).send(orders);
   } catch (error) {
     console.error(error);
     reply.status(500).send({ message: "Ошибка при получении заказов" });
+  }
+};
+export const updateOrderRead = async (
+  req: FastifyRequest<{ Body: { read: boolean } }>,
+  reply: FastifyReply
+) => {
+  const { read } = req.body;
+  const { id } = req.params as { id: number };
+  try {
+    await prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        read:true,
+      },
+    });
+    reply.status(200).send({ message: "Read  успешно обновленно" });
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при обновлении read" });
   }
 };

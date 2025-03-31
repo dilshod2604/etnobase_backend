@@ -51,6 +51,21 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsController_1.disLikeComments);
+    fastify.delete("/comments/:id/:userId", {
+        schema: {
+            params: {
+                type: "object",
+                properties: {
+                    id: { type: "number" },
+                    userId: { type: "number" },
+                },
+                required: ["id", "userId"],
+            },
+            response: {
+                200: (0, commentSchema_1.$ref)("CommentResponseSchema"),
+            },
+        },
+    }, commentsController_1.deleteComment);
     fastify.get("/comments/:newsId", {
         schema: {
             params: {

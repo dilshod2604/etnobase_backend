@@ -1,4 +1,8 @@
-import { getOrderById } from './../../constrolers/order/orderController';
+import {
+  getOrderById,
+  getOrders,
+  updateOrderRead,
+} from "./../../constrolers/order/orderController";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
@@ -14,6 +18,7 @@ export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
     "/order",
     {
+      preHandler: [fastify.authJWT],
       schema: {
         body: $ref("createOrderSchema"),
         response: {
@@ -85,7 +90,8 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     getOrdersByUserId
-  );fastify.get(
+  );
+  fastify.get(
     "/order/:id",
     {
       schema: {
@@ -100,5 +106,34 @@ export default fp(async (fastify: FastifyInstance) => {
     },
     getOrderById
   );
-  fastify.get("/order", getOrdersByUserId);
+  fastify.get(
+    "/orders",
+    {
+      schema: {
+        response: {
+          200: $ref("getAllOrderSchemas"),
+        },
+      },
+    },
+    getOrders
+  );
+  fastify.put(
+    "/order/read/:id",
+    {
+      schema: {
+        params: {
+          type: "object",
+          properties: {
+            id: { type: "number" },
+          },
+          required: ["id"],
+        },
+        body: $ref("updateOrderRead"),
+        response: {
+          200: $ref("orderResponseSchema"),
+        },
+      },
+    },
+    updateOrderRead
+  );
 });

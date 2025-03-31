@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchNewsComments = exports.fetchAllComments = exports.disLikeComments = exports.likeComment = exports.addComment = void 0;
+exports.deleteComment = exports.fetchNewsComments = exports.fetchAllComments = exports.disLikeComments = exports.likeComment = exports.addComment = void 0;
 const prisma_1 = require("../../utils/prisma");
 const addComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { newsId, text, userId } = req.body;
@@ -162,3 +162,20 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.fetchNewsComments = fetchNewsComments;
+const deleteComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, userId } = req.params;
+    try {
+        yield prisma_1.prisma.newsComment.delete({
+            where: {
+                id,
+                userId,
+            },
+        });
+        reply.status(204).send({ message: "Коментария успешно удалено" });
+    }
+    catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка при удалении коментария" });
+    }
+});
+exports.deleteComment = deleteComment;

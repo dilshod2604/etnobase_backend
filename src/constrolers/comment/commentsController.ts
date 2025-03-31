@@ -163,3 +163,21 @@ export const fetchNewsComments = async (
     console.error(error);
   }
 };
+export const deleteComment = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const { id, userId } = req.params as { id: number; userId: number };
+  try {
+    await prisma.newsComment.delete({
+      where: {
+        id,
+        userId,
+      },
+    });
+    reply.status(204).send({ message: "Коментария успешно удалено" });
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при удалении коментария" });
+  }
+};

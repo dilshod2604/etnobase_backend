@@ -8,18 +8,37 @@ const orderSchema = z.object({
   senderName: z.string(),
   message: z.string(),
   phoneNumber: z.string(),
+  id: z.number().int(),
+  createdAt: z.date(),
+  orderStatus: z.nativeEnum(OrderStatus),
+  read: z.boolean(),
 });
 const orderResponseSchema = z.object({
   message: z.string(),
 });
-const createOrderSchema = orderSchema;
+const createOrderSchema = orderSchema.omit({
+  createdAt: true,
+  id: true,
+  orderStatus: true,
+  read: true,
+});
+const getAllOrderSchemas = z.array(orderSchema);
 const updateOrdersStatusSchema = z.object({
   orderStatus: z.nativeEnum(OrderStatus),
 });
+const updateOrderRead = z.object({
+  read: z.boolean(),
+});
 
-export type CreateOrderSchemaInput = z.infer<typeof orderSchema>;
+export type CreateOrderSchemaInput = z.infer<typeof createOrderSchema>;
 export type UpdateOrderInputSchema = z.infer<typeof updateOrdersStatusSchema>;
 export const { schemas: OrderSchema, $ref } = buildJsonSchemas(
-  { orderResponseSchema, createOrderSchema, updateOrdersStatusSchema },
+  {
+    orderResponseSchema,
+    createOrderSchema,
+    updateOrdersStatusSchema,
+    updateOrderRead,
+    getAllOrderSchemas,
+  },
   { $id: "Order" }
 );

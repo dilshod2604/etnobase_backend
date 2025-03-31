@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import {
   addComment,
+  deleteComment,
   disLikeComments,
   fetchAllComments,
   fetchNewsComments,
@@ -58,6 +59,25 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     disLikeComments
+  );
+  fastify.delete(
+    "/comments/:id/:userId",
+    {
+      schema: {
+        params: {
+          type: "object",
+          properties: {
+            id: { type: "number" },
+            userId: { type: "number" },
+          },
+          required: ["id", "userId"],
+        },
+        response: {
+          200: $ref("CommentResponseSchema"),
+        },
+      },
+    },
+    deleteComment
   );
   fastify.get(
     "/comments/:newsId",

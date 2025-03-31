@@ -11,12 +11,31 @@ const orderSchema = zod_1.z.object({
     senderName: zod_1.z.string(),
     message: zod_1.z.string(),
     phoneNumber: zod_1.z.string(),
+    id: zod_1.z.number().int(),
+    createdAt: zod_1.z.date(),
+    orderStatus: zod_1.z.nativeEnum(client_1.OrderStatus),
+    read: zod_1.z.boolean(),
 });
 const orderResponseSchema = zod_1.z.object({
     message: zod_1.z.string(),
 });
-const createOrderSchema = orderSchema;
+const createOrderSchema = orderSchema.omit({
+    createdAt: true,
+    id: true,
+    orderStatus: true,
+    read: true,
+});
+const getAllOrderSchemas = zod_1.z.array(orderSchema);
 const updateOrdersStatusSchema = zod_1.z.object({
     orderStatus: zod_1.z.nativeEnum(client_1.OrderStatus),
 });
-_a = (0, fastify_zod_1.buildJsonSchemas)({ orderResponseSchema, createOrderSchema, updateOrdersStatusSchema }, { $id: "Order" }), exports.OrderSchema = _a.schemas, exports.$ref = _a.$ref;
+const updateOrderRead = zod_1.z.object({
+    read: zod_1.z.boolean(),
+});
+_a = (0, fastify_zod_1.buildJsonSchemas)({
+    orderResponseSchema,
+    createOrderSchema,
+    updateOrdersStatusSchema,
+    updateOrderRead,
+    getAllOrderSchemas,
+}, { $id: "Order" }), exports.OrderSchema = _a.schemas, exports.$ref = _a.$ref;
