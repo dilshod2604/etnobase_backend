@@ -27,7 +27,7 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   fastify.post(
-    "/coments/:id/:reaction/:userID",
+    "/coments/:id/:reaction/:userId",
     {
       preHandler: [fastify.authJWT],
       schema: {

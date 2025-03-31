@@ -56,7 +56,6 @@ export const deleteOrder = async (
     console.error(error);
   }
 };
-
 export const deleteOrders = async (
   req: FastifyRequest,
   reply: FastifyReply
@@ -126,7 +125,7 @@ export const getOrderById = async (
 ) => {
   const { id } = req.params;
   try {
-    const order= await prisma.order.findFirst({
+    const order = await prisma.order.findFirst({
       where: {
         id,
       },
@@ -172,7 +171,7 @@ export const updateOrderRead = async (
         id,
       },
       data: {
-        read:true,
+        read: true,
       },
     });
     reply.status(200).send({ message: "Read  успешно обновленно" });

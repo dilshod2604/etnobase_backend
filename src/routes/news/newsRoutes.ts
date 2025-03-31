@@ -67,9 +67,9 @@ export default fp(async (fastify: FastifyInstance) => {
           },
           required: ["id"],
         },
-        response: {
-          200: $ref("newsResponse"),
-        },
+        // response: {
+        //   200: $ref("newsResponse"),
+        // },
       },
     },
     fetchNewsById

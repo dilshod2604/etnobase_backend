@@ -65,7 +65,11 @@ export const deleteNews = async (
 };
 export const fetchNews = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const news = await prisma.news.findMany();
+    const news = await prisma.news.findMany({
+      include: {
+        comments: true,
+      },
+    });
     reply.status(200).send(news);
   } catch (error) {
     console.error(error);

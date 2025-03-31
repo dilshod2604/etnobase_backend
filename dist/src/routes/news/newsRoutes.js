@@ -59,9 +59,9 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 },
                 required: ["id"],
             },
-            response: {
-                200: (0, newsSchema_1.$ref)("newsResponse"),
-            },
+            // response: {
+            //   200: $ref("newsResponse"),
+            // },
         },
     }, newsController_1.fetchNewsById);
     fastify.get("/news", {

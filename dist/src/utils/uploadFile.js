@@ -46,7 +46,7 @@ const uploadFile = (_a) => __awaiter(void 0, [_a], void 0, function* ({ file, up
             throw new Error("Недопустимый тип файла");
         }
         const randomString = crypto_1.default.randomBytes(8).toString("hex");
-        const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
+        const fileName = `image_${Date.now()}_${randomString}${fileExt}`;
         const fileSavePath = path_1.default.join(`${dirname}${uploadPath}`, fileName);
         const dir = path_1.default.dirname(fileSavePath);
         if (!fs_1.default.existsSync(dir) || !fs_1.default.lstatSync(dir).isDirectory()) {

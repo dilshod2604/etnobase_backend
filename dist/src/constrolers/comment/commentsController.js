@@ -31,6 +31,7 @@ const addComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* (
 exports.addComment = addComment;
 const likeComment = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { id, reaction, userId } = req.params;
+    console.log(id, reaction, userId);
     const isLike = reaction === "like";
     try {
         const user = yield prisma_1.prisma.user.findFirst({
@@ -127,7 +128,14 @@ const fetchAllComments = (req, reply) => __awaiter(void 0, void 0, void 0, funct
     try {
         const comments = yield prisma_1.prisma.newsComment.findMany({
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        avatar: true,
+                        email: true,
+                        name: true,
+                    },
+                },
             },
         });
         reply.status(200).send(comments);

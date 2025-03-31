@@ -63,7 +63,11 @@ const deleteNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* (
 exports.deleteNews = deleteNews;
 const fetchNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const news = yield prisma_1.prisma.news.findMany();
+        const news = yield prisma_1.prisma.news.findMany({
+            include: {
+                comments: true,
+            },
+        });
         reply.status(200).send(news);
     }
     catch (error) {

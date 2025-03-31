@@ -25,7 +25,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsController_1.addComment);
-    fastify.post("/coments/:id/:reaction/:userID", {
+    fastify.post("/coments/:id/:reaction/:userId", {
         preHandler: [fastify.authJWT],
         schema: {
             params: {

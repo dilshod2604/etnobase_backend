@@ -27,6 +27,7 @@ export const likeComment = async (req: FastifyRequest, reply: FastifyReply) => {
     reaction: string;
     userId: number;
   };
+  console.log(id, reaction, userId);
   const isLike = reaction === "like";
   try {
     const user = await prisma.user.findFirst({
@@ -129,7 +130,14 @@ export const fetchAllComments = async (
   try {
     const comments = await prisma.newsComment.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            avatar: true,
+            email: true,
+            name: true,
+          },
+        },
       },
     });
     reply.status(200).send(comments);

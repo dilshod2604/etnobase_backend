@@ -38,7 +38,7 @@ export const uploadFile = async ({ file, uploadPath }: uploadFileProps) => {
     }
 
     const randomString = crypto.randomBytes(8).toString("hex");
-    const fileName = `image_${Date.now()}_${randomString}.${fileExt}`;
+    const fileName = `image_${Date.now()}_${randomString}${fileExt}`;
     const fileSavePath = path.join(`${dirname}${uploadPath}`, fileName);
 
     const dir = path.dirname(fileSavePath);
