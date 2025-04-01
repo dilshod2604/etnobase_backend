@@ -68,6 +68,8 @@ export const fetchNews = async (req: FastifyRequest, reply: FastifyReply) => {
     const news = await prisma.news.findMany({
       include: {
         comments: true,
+        newsLikes: true,
+        newsViews: true,
       },
     });
     reply.status(200).send(news);
@@ -117,6 +119,7 @@ export const handleLikeDislikeNews = async (
 
     await prisma.$transaction(async (tx) => {
       const isLike = reaction === "like";
+      const isDislike = reaction === "dislike";
       const existingNewsLike = await prisma.newsLikes.findUnique({
         where: {
           userId_newsId: {
@@ -150,11 +153,12 @@ export const handleLikeDislikeNews = async (
             userId,
             newsId,
             isLike,
+            isDislike,
           },
         });
         if (isLike) {
           likesDelta += 1;
-        } else {
+        } else if (isDislike) {
           dislikesDelta += 1;
         }
       }

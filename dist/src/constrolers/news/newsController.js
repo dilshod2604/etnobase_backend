@@ -66,6 +66,8 @@ const fetchNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* ()
         const news = yield prisma_1.prisma.news.findMany({
             include: {
                 comments: true,
+                newsLikes: true,
+                newsViews: true,
             },
         });
         reply.status(200).send(news);
@@ -108,6 +110,7 @@ const handleLikeDislikeNews = (req, reply) => __awaiter(void 0, void 0, void 0, 
         }
         yield prisma_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
             const isLike = reaction === "like";
+            const isDislike = reaction === "dislike";
             const existingNewsLike = yield prisma_1.prisma.newsLikes.findUnique({
                 where: {
                     userId_newsId: {
@@ -140,12 +143,13 @@ const handleLikeDislikeNews = (req, reply) => __awaiter(void 0, void 0, void 0, 
                         userId,
                         newsId,
                         isLike,
+                        isDislike,
                     },
                 });
                 if (isLike) {
                     likesDelta += 1;
                 }
-                else {
+                else if (isDislike) {
                     dislikesDelta += 1;
                 }
             }
