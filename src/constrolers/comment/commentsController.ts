@@ -133,6 +133,7 @@ export const fetchNewsComments = async (
         newsId,
       },
       include: {
+        newsCommentLike: true,
         user: {
           select: {
             id: true,

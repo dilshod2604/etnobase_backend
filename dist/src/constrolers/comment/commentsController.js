@@ -123,6 +123,7 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
                 newsId,
             },
             include: {
+                newsCommentLike: true,
                 user: {
                     select: {
                         id: true,
