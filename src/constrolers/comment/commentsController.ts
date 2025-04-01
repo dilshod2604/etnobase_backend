@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../utils/prisma";
+import { clear } from "console";
 
 export const addComment = async (req: FastifyRequest, reply: FastifyReply) => {
   const { newsId, text, userId } = req.body as {
@@ -38,66 +39,57 @@ export const handleLikeDislike = async (
     ]);
 
     if (!user || !comment) {
-      return reply.status(404).send({ message: "Пользователь или комментарий не найден" });
+      return reply
+        .status(404)
+        .send({ message: "Пользователь или комментарий не найден" });
     }
-
-    const isLike = reaction === "like";
-    const isDislike = reaction === "dislike";
-
-    if (!isLike && !isDislike) {
-      return reply.badRequest("Некорректная реакция");
-    }
-
-    const existReaction = await prisma.newsCommentLike.findUnique({
-      where: { userId_commentId: { userId, commentId: id } },
-    });
 
     await prisma.$transaction(async (tx) => {
+      const isLike = reaction === "like";
+      const existReaction = await tx.newsCommentLike.findUnique({
+        where: { userId_commentId: { userId, commentId: id } },
+      });
+
+      let likesDelta = 0;
+      let dislikesDelta = 0;
+
       if (existReaction) {
         await tx.newsCommentLike.delete({
           where: { userId_commentId: { userId, commentId: id } },
         });
 
-        await tx.newsComment.update({
-          where: { id },
-          data: {
-            likes: { decrement: existReaction.isLike ? 1 : 0 },
-            dislikes: { decrement: existReaction.isLike ? 0 : 1 },
-          },
-        });
-
-        if (existReaction.isLike !== isLike) {
-          await tx.newsCommentLike.create({
-            data: { userId, commentId: id, isLike },
-          });
-
-          await tx.newsComment.update({
-            where: { id },
-            data: {
-              likes: { increment: isLike ? 1 : 0 },
-              dislikes: { increment: isLike ? 0 : 1 },
-            },
-          });
+        if (existReaction.isLike) {
+          likesDelta -= 1;
+        } else {
+          dislikesDelta -= 1;
         }
-      } else {
+      }
+
+      if (!existReaction || existReaction.isLike !== isLike) {
         await tx.newsCommentLike.create({
           data: { userId, commentId: id, isLike },
         });
 
-        await tx.newsComment.update({
-          where: { id },
-          data: {
-            likes: { increment: isLike ? 1 : 0 },
-            dislikes: { increment: isLike ? 0 : 1 },
-          },
-        });
+        if (isLike) {
+          likesDelta += 1;
+        } else {
+          dislikesDelta += 1;
+        }
       }
+
+      await tx.newsComment.update({
+        where: { id },
+        data: {
+          likes: { increment: likesDelta },
+          dislikes: { increment: dislikesDelta },
+        },
+      });
     });
 
     return reply.status(204).send();
   } catch (error) {
     console.error(error);
-    reply.status(500).send({ message: "Ошибка при обработке реакции" });
+    return reply.status(500).send({ message: "Ошибка при обработке реакции" });
   }
 };
 export const fetchAllComments = async (
