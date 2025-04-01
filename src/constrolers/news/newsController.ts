@@ -95,3 +95,87 @@ export const fetchNewsById = async (
     reply.status(500).send({ message: "Ошибка при получение новостей" });
   }
 };
+export const handleLikeDislikeNews = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const { userId, newsId, reaction } = req.body as {
+    userId: number;
+    newsId: number;
+    reaction: string;
+  };
+  try {
+    const [user, news] = await Promise.all([
+      prisma.user.findFirst({ where: { id: userId } }),
+      prisma.news.findFirst({ where: { id: newsId } }),
+    ]);
+    if (!user || !news) {
+      return reply
+        .status(404)
+        .send({ message: "Пользователь или новость не найдены" });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const isLike = reaction === "like";
+      const existingNewsLike = await prisma.newsLikes.findUnique({
+        where: {
+          userId_newsId: {
+            userId,
+            newsId,
+          },
+        },
+      });
+      let likesDelta = 0;
+      let dislikesDelta = 0;
+
+      if (existingNewsLike) {
+        await tx.newsLikes.delete({
+          where: {
+            userId_newsId: {
+              userId,
+              newsId,
+            },
+          },
+        });
+
+        if (existingNewsLike.isLike) {
+          likesDelta -= 1;
+        } else {
+          dislikesDelta -= 1;
+        }
+      }
+      if (!existingNewsLike || existingNewsLike.isLike !== isLike) {
+        await tx.newsLikes.create({
+          data: {
+            userId,
+            newsId,
+            isLike,
+          },
+        });
+        if (isLike) {
+          likesDelta += 1;
+        } else {
+          dislikesDelta += 1;
+        }
+      }
+      await tx.news.update({
+        where: {
+          id: newsId,
+        },
+        data: {
+          likes: { increment: likesDelta },
+          dislikes: { increment: dislikesDelta },
+        },
+        // select: {
+        //   id: true,
+        //   likes: true,
+        //   dislikes: true,
+        // },
+      });
+      return reply.status(204).send();
+    });
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send({ message: "Ошибка при лайк/дизлайк новости" });
+  }
+};

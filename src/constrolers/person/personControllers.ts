@@ -15,7 +15,7 @@ import {
   filterBySex,
 } from "../../filters/personFilters/personFIlter";
 import { PersonQuery } from "../../types/types";
-import { encodeIfCyrillic } from "../../utils/encodeIfCyrillic";
+
 
 export const createPerson = async (
   req: FastifyRequest<{ Body: CreatePersonInput }>,
@@ -39,7 +39,7 @@ export const createPerson = async (
       data: personData,
     });
     if (roles.length > 0) {
-      await prisma.personRoleMapping.createMany({
+      const res = await prisma.personRoleMapping.createMany({
         data: roles.map((role) => ({
           personId: person.id,
           role: role.role,

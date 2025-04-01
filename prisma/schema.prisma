@@ -115,9 +115,11 @@ model User {
   provider        String?            @default("email") @db.VarChar(255)
   favorites       Favorites[]
   comments        NewsComment[]
-  newsCommentLike NewsCommentLike[] 
+  newsCommentLike NewsCommentLike[]
+  newsLikes       NewsLikes[]
   orders          Order[]
   resetCodes      PasswordResetCode?
+  newsViews NewsViews[]
   userPersons     Person[]           @relation("UserPerson")
 }
 
@@ -163,9 +165,14 @@ model News {
   title       String        @db.VarChar(255)
   description String        @db.VarChar(255)
   poster      String?       @db.VarChar(255)
+  likes       Int @default(0)
+  dislikes    Int @default(0)
+  views Int @default(0)
   sourceNews  String?       @db.VarChar(255)
   createdAt   DateTime      @default(now())
-  comments NewsComment[]
+  comments    NewsComment[]
+  newsLikes   NewsLikes[]
+  newsViews NewsViews []
 }
 
 model FAQ {
@@ -192,15 +199,40 @@ model NewsComment {
 }
 
 model NewsCommentLike {
-  id        Int       @id @default(autoincrement())
   userId      Int
   commentId   Int
   isLike      Boolean     @default(false)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          Int         @id @default(autoincrement())
   newsComment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-@@unique([userId, commentId], map: "NewsCommentLike_user_comment_unique")
+  @@unique([userId, commentId], map: "NewsCommentLike_user_comment_unique")
   @@index([commentId], map: "NewsCommentLike_ibfk_2")
+}
+
+model NewsLikes {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  newsId    Int
+  isLike    Boolean @default(false)
+  isDislike Boolean @default(false)
+  news     News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId,newsId], map: "NewsLike_user_news_unique")
+  @@index([newsId], map: "NewsLikes_ibfk_2")
+}
+
+model NewsViews{
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  newsId    Int 
+  views      Int     @default(0)
+  news     News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   @@unique([userId,newsId], map: "NewsViews_user_views_unique")
+  @@index([newsId], map: "NewsViews_ibfk_2")
 }
 
 enum PersonRole {

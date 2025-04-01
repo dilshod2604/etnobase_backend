@@ -5,6 +5,7 @@ import {
   deleteNews,
   fetchNews,
   fetchNewsById,
+  handleLikeDislikeNews,
   updateNews,
 } from "../../constrolers/news/newsController";
 import { $ref } from "../../schemas/news/newsSchema";
@@ -90,5 +91,32 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     uploadAwatar
+  );
+  fastify.post(
+    "/news/like",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            newsId: { type: "number" },
+            reaction: { type: "string", enum: ["like", "dislike"] },
+            userId: { type: "number" },
+          },
+          required: ["newsId", "reaction", "userId"],
+        },
+        // response: {
+        //   200: {
+        //     type: "object",
+        //     properties: {
+        //       id: { type: "number" },
+        //       likes: { type: "number" },
+        //       dislikes: { type: "number" },
+        //     },
+        //   },
+        // },
+      },
+    },
+    handleLikeDislikeNews
   );
 });

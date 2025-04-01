@@ -43,7 +43,7 @@ const createPerson = (req, reply) => __awaiter(void 0, void 0, void 0, function*
             data: personData,
         });
         if (roles.length > 0) {
-            yield prisma_1.prisma.personRoleMapping.createMany({
+            const res = yield prisma_1.prisma.personRoleMapping.createMany({
                 data: roles.map((role) => ({
                     personId: person.id,
                     role: role.role,

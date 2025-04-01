@@ -77,4 +77,27 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, uploadAwatar_1.uploadAwatar);
+    fastify.post("/news/like", {
+        schema: {
+            body: {
+                type: "object",
+                properties: {
+                    newsId: { type: "number" },
+                    reaction: { type: "string", enum: ["like", "dislike"] },
+                    userId: { type: "number" },
+                },
+                required: ["newsId", "reaction", "userId"],
+            },
+            // response: {
+            //   200: {
+            //     type: "object",
+            //     properties: {
+            //       id: { type: "number" },
+            //       likes: { type: "number" },
+            //       dislikes: { type: "number" },
+            //     },
+            //   },
+            // },
+        },
+    }, newsController_1.handleLikeDislikeNews);
 }));

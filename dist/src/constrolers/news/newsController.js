@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchNewsById = exports.fetchNews = exports.deleteNews = exports.updateNews = exports.createNews = void 0;
+exports.handleLikeDislikeNews = exports.fetchNewsById = exports.fetchNews = exports.deleteNews = exports.updateNews = exports.createNews = void 0;
 const prisma_1 = require("../../utils/prisma");
 const createNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
@@ -94,3 +94,81 @@ const fetchNewsById = (req, reply) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.fetchNewsById = fetchNewsById;
+const handleLikeDislikeNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, newsId, reaction } = req.body;
+    try {
+        const [user, news] = yield Promise.all([
+            prisma_1.prisma.user.findFirst({ where: { id: userId } }),
+            prisma_1.prisma.news.findFirst({ where: { id: newsId } }),
+        ]);
+        if (!user || !news) {
+            return reply
+                .status(404)
+                .send({ message: "Пользователь или новость не найдены" });
+        }
+        yield prisma_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+            const isLike = reaction === "like";
+            const existingNewsLike = yield prisma_1.prisma.newsLikes.findUnique({
+                where: {
+                    userId_newsId: {
+                        userId,
+                        newsId,
+                    },
+                },
+            });
+            let likesDelta = 0;
+            let dislikesDelta = 0;
+            if (existingNewsLike) {
+                yield tx.newsLikes.delete({
+                    where: {
+                        userId_newsId: {
+                            userId,
+                            newsId,
+                        },
+                    },
+                });
+                if (existingNewsLike.isLike) {
+                    likesDelta -= 1;
+                }
+                else {
+                    dislikesDelta -= 1;
+                }
+            }
+            if (!existingNewsLike || existingNewsLike.isLike !== isLike) {
+                yield tx.newsLikes.create({
+                    data: {
+                        userId,
+                        newsId,
+                        isLike,
+                    },
+                });
+                if (isLike) {
+                    likesDelta += 1;
+                }
+                else {
+                    dislikesDelta += 1;
+                }
+            }
+            yield tx.news.update({
+                where: {
+                    id: newsId,
+                },
+                data: {
+                    likes: { increment: likesDelta },
+                    dislikes: { increment: dislikesDelta },
+                },
+                // select: {
+                //   id: true,
+                //   likes: true,
+                //   dislikes: true,
+                // },
+            });
+            return reply.status(204).send();
+        }));
+    }
+    catch (error) {
+        console.error(error);
+        reply.status(500).send({ message: "Ошибка при лайк/дизлайк новости" });
+    }
+});
+exports.handleLikeDislikeNews = handleLikeDislikeNews;
