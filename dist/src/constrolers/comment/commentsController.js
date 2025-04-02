@@ -152,6 +152,24 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
                         name: true,
                     },
                 },
+                replies: {
+                    include: {
+                        newsReplyLikes: {
+                            select: {
+                                isDislike: true,
+                                isLike: true,
+                            },
+                        },
+                        user: {
+                            select: {
+                                id: true,
+                                avatar: true,
+                                email: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
         reply.status(200).send(comments);

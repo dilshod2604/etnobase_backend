@@ -161,6 +161,24 @@ export const fetchNewsComments = async (
             name: true,
           },
         },
+        replies: {
+          include: {
+            newsReplyLikes: {
+              select: {
+                isDislike: true,
+                isLike: true,
+              },
+            },
+            user: {
+              select: {
+                id: true,
+                avatar: true,
+                email: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     reply.status(200).send(comments);
