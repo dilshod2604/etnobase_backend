@@ -176,3 +176,22 @@ const handleLikeDislikeNews = (req, reply) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.handleLikeDislikeNews = handleLikeDislikeNews;
+// export const newsViews = async (req: FastifyRequest, reply: FastifyReply) => {
+//   const { userId, newsId } = req.body as {
+//     userId: number;
+//     newsId: number;
+//   };
+//   try {
+//     const [user, news] = await Promise.all([
+//       prisma.user.findFirst({ where: { id: userId } }),
+//       prisma.news.findFirst({ where: { id: newsId } }),
+//     ]);
+//     if (!user || !news) {
+//       return reply
+//         .status(404)
+//         .send({ message: "Пользователь или новость не найдены" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };

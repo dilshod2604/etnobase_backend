@@ -113,13 +113,14 @@ model User {
   role            User_role?         @default(USER)
   avatar          String?            @db.VarChar(255)
   provider        String?            @default("email") @db.VarChar(255)
+  commentReply    CommentReply[]
   favorites       Favorites[]
   comments        NewsComment[]
   newsCommentLike NewsCommentLike[]
   newsLikes       NewsLikes[]
+  newsViews       NewsViews[]
   orders          Order[]
   resetCodes      PasswordResetCode?
-  newsViews NewsViews[]
   userPersons     Person[]           @relation("UserPerson")
 }
 
@@ -165,14 +166,14 @@ model News {
   title       String        @db.VarChar(255)
   description String        @db.VarChar(255)
   poster      String?       @db.VarChar(255)
-  likes       Int @default(0)
-  dislikes    Int @default(0)
-  views Int @default(0)
   sourceNews  String?       @db.VarChar(255)
   createdAt   DateTime      @default(now())
+  dislikes    Int           @default(0)
+  likes       Int           @default(0)
+  views       Int           @default(0)
   comments    NewsComment[]
   newsLikes   NewsLikes[]
-  newsViews NewsViews []
+  newsViews   NewsViews[]
 }
 
 model FAQ {
@@ -190,6 +191,7 @@ model NewsComment {
   dislikes        Int               @default(0)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime?         @db.DateTime(0)
+  replies         CommentReply[]  @relation("CommentToReplies") 
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_1")
   news            News              @relation(fields: [newsId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_2")
   newsCommentLike NewsCommentLike[]
@@ -200,13 +202,18 @@ model NewsComment {
 
 model NewsCommentLike {
   userId      Int
-  commentId   Int
+  commentId   Int?
+  replyId     Int?
   isLike      Boolean     @default(false)
+  isDislike   Boolean     @default(false)
   id          Int         @id @default(autoincrement())
-  newsComment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsComment NewsComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  replies CommentReply? @relation(fields: [replyId],references: [id] ,onDelete: Cascade,name:"ReplyLikes")
 
-  @@unique([userId, commentId], map: "NewsCommentLike_user_comment_unique")
+  @@unique([userId, commentId], name: "user_comment_unique") 
+  @@unique([userId, replyId], name: "user_reply_unique")
+  @@index([replyId],map:"NewsCommentReplyLike_ibfk_2")
   @@index([commentId], map: "NewsCommentLike_ibfk_2")
 }
 
@@ -216,23 +223,38 @@ model NewsLikes {
   newsId    Int
   isLike    Boolean @default(false)
   isDislike Boolean @default(false)
-  news     News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  news      News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId,newsId], map: "NewsLike_user_news_unique")
+  @@unique([userId, newsId], map: "NewsLike_user_news_unique")
   @@index([newsId], map: "NewsLikes_ibfk_2")
 }
 
-model NewsViews{
-  id        Int     @id @default(autoincrement())
-  userId    Int
-  newsId    Int 
-  views      Int     @default(0)
-  news     News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model NewsViews {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  newsId Int
+  views  Int  @default(0)
+  news   News @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   @@unique([userId,newsId], map: "NewsViews_user_views_unique")
+  @@unique([userId, newsId], map: "NewsViews_user_views_unique")
   @@index([newsId], map: "NewsViews_ibfk_2")
+}
+
+model CommentReply {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  commentId   Int
+  text        String      @db.Text
+  likes       Int         @default(0)
+  dislikes    Int         @default(0)
+  newsReplyLikes NewsCommentLike[]   @relation("ReplyLikes")
+  createdAt   DateTime    @default(now()) @db.DateTime(0)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsComment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade,name:"CommentToReplies")
+
+  @@index([commentId], map: "commentId")
+  @@index([userId], map: "userId")
 }
 
 enum PersonRole {

@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../utils/prisma";
-import { clear } from "console";
 
 export const addComment = async (req: FastifyRequest, reply: FastifyReply) => {
   const { newsId, text, userId } = req.body as {
@@ -46,8 +45,9 @@ export const handleLikeDislike = async (
 
     await prisma.$transaction(async (tx) => {
       const isLike = reaction === "like";
+      const isDislike = reaction === "dislike";
       const existReaction = await tx.newsCommentLike.findUnique({
-        where: { userId_commentId: { userId, commentId: id } },
+        where: { user_comment_unique: { userId, commentId: id } },
       });
 
       let likesDelta = 0;
@@ -55,7 +55,7 @@ export const handleLikeDislike = async (
 
       if (existReaction) {
         await tx.newsCommentLike.delete({
-          where: { userId_commentId: { userId, commentId: id } },
+          where: { user_comment_unique: { userId, commentId: id } },
         });
 
         if (existReaction.isLike) {
@@ -67,7 +67,7 @@ export const handleLikeDislike = async (
 
       if (!existReaction || existReaction.isLike !== isLike) {
         await tx.newsCommentLike.create({
-          data: { userId, commentId: id, isLike },
+          data: { userId, commentId: id, isLike, isDislike },
         });
 
         if (isLike) {
@@ -102,6 +102,7 @@ export const fetchAllComments = async (
         newsCommentLike: {
           select: {
             isLike: true,
+            isDislike: true,
           },
         },
         user: {

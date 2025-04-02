@@ -183,3 +183,23 @@ export const handleLikeDislikeNews = async (
     reply.status(500).send({ message: "Ошибка при лайк/дизлайк новости" });
   }
 };
+// export const newsViews = async (req: FastifyRequest, reply: FastifyReply) => {
+//   const { userId, newsId } = req.body as {
+//     userId: number;
+//     newsId: number;
+//   };
+//   try {
+//     const [user, news] = await Promise.all([
+//       prisma.user.findFirst({ where: { id: userId } }),
+//       prisma.news.findFirst({ where: { id: newsId } }),
+//     ]);
+//     if (!user || !news) {
+//       return reply
+//         .status(404)
+//         .send({ message: "Пользователь или новость не найдены" });
+//     }
+
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };

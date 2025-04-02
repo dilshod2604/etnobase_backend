@@ -43,14 +43,15 @@ const handleLikeDislike = (req, reply) => __awaiter(void 0, void 0, void 0, func
         }
         yield prisma_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
             const isLike = reaction === "like";
+            const isDislike = reaction === "dislike";
             const existReaction = yield tx.newsCommentLike.findUnique({
-                where: { userId_commentId: { userId, commentId: id } },
+                where: { user_comment_unique: { userId, commentId: id } },
             });
             let likesDelta = 0;
             let dislikesDelta = 0;
             if (existReaction) {
                 yield tx.newsCommentLike.delete({
-                    where: { userId_commentId: { userId, commentId: id } },
+                    where: { user_comment_unique: { userId, commentId: id } },
                 });
                 if (existReaction.isLike) {
                     likesDelta -= 1;
@@ -61,7 +62,7 @@ const handleLikeDislike = (req, reply) => __awaiter(void 0, void 0, void 0, func
             }
             if (!existReaction || existReaction.isLike !== isLike) {
                 yield tx.newsCommentLike.create({
-                    data: { userId, commentId: id, isLike },
+                    data: { userId, commentId: id, isLike, isDislike },
                 });
                 if (isLike) {
                     likesDelta += 1;
@@ -93,6 +94,7 @@ const fetchAllComments = (req, reply) => __awaiter(void 0, void 0, void 0, funct
                 newsCommentLike: {
                     select: {
                         isLike: true,
+                        isDislike: true,
                     },
                 },
                 user: {
