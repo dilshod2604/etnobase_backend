@@ -105,6 +105,24 @@ const fetchAllComments = (req, reply) => __awaiter(void 0, void 0, void 0, funct
                         name: true,
                     },
                 },
+                replies: {
+                    include: {
+                        newsReplyLikes: {
+                            select: {
+                                isDislike: true,
+                                isLike: true,
+                            },
+                        },
+                        user: {
+                            select: {
+                                id: true,
+                                avatar: true,
+                                email: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
         if (comments.length === 0) {
