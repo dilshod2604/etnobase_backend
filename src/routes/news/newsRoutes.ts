@@ -6,6 +6,7 @@ import {
   fetchNews,
   fetchNewsById,
   handleLikeDislikeNews,
+  newsViews,
   updateNews,
 } from "../../constrolers/news/newsController";
 import { $ref } from "../../schemas/news/newsSchema";
@@ -118,5 +119,21 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     handleLikeDislikeNews
+  );
+  fastify.post(
+    "/news/views",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            newsId: { type: "number" },
+            userId: { type: "number" },
+          },
+          required: ["newsId", "userId"],
+        },
+      },
+    },
+    newsViews
   );
 });

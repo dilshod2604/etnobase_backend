@@ -100,4 +100,16 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             // },
         },
     }, newsController_1.handleLikeDislikeNews);
+    fastify.post("/news/views", {
+        schema: {
+            body: {
+                type: "object",
+                properties: {
+                    newsId: { type: "number" },
+                    userId: { type: "number" },
+                },
+                required: ["newsId", "userId"],
+            },
+        },
+    }, newsController_1.newsViews);
 }));

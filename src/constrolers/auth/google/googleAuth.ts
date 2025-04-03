@@ -48,7 +48,7 @@ export async function googleAuthController(
     );
 
     reply.redirect(
-      `http://localhost:3000/auth/google/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`
+      `${process.env.FRONTEND_URL}/auth/google/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`
     );
   } catch (error) {
     console.error(error);

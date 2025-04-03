@@ -162,6 +162,9 @@ export const fetchNewsComments = async (
           },
         },
         replies: {
+          orderBy: {
+            createdAt: "desc",
+          },
           include: {
             newsReplyLikes: true,
             user: {

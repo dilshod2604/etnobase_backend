@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleLikeDislikeNews = exports.fetchNewsById = exports.fetchNews = exports.deleteNews = exports.updateNews = exports.createNews = void 0;
+exports.newsViews = exports.handleLikeDislikeNews = exports.fetchNewsById = exports.fetchNews = exports.deleteNews = exports.updateNews = exports.createNews = void 0;
 const prisma_1 = require("../../utils/prisma");
 const createNews = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
@@ -176,22 +176,43 @@ const handleLikeDislikeNews = (req, reply) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.handleLikeDislikeNews = handleLikeDislikeNews;
-// export const newsViews = async (req: FastifyRequest, reply: FastifyReply) => {
-//   const { userId, newsId } = req.body as {
-//     userId: number;
-//     newsId: number;
-//   };
-//   try {
-//     const [user, news] = await Promise.all([
-//       prisma.user.findFirst({ where: { id: userId } }),
-//       prisma.news.findFirst({ where: { id: newsId } }),
-//     ]);
-//     if (!user || !news) {
-//       return reply
-//         .status(404)
-//         .send({ message: "Пользователь или новость не найдены" });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+const newsViews = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { newsId, userId } = req.body;
+    try {
+        const [userExists, newsExists] = yield Promise.all([
+            prisma_1.prisma.user.count({ where: { id: userId } }),
+            prisma_1.prisma.news.count({ where: { id: newsId } }),
+        ]);
+        if (!userExists || !newsExists) {
+            return reply.status(404).send({
+                message: "Пользователь или новость не найдены",
+            });
+        }
+        yield prisma_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+            yield tx.newsViews.upsert({
+                where: { userId_newsId: { userId, newsId } },
+                create: {
+                    userId,
+                    newsId,
+                    views: 1,
+                },
+                update: {
+                    views: { increment: 1 },
+                },
+            });
+            yield tx.news.update({
+                where: { id: newsId },
+                data: { views: { increment: 1 } },
+            });
+        }));
+        return reply.status(204).send();
+    }
+    catch (error) {
+        console.error("News view tracking error:", error);
+        return reply.status(500).send({
+            message: "Ошибка при учете просмотра",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+});
+exports.newsViews = newsViews;

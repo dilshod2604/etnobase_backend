@@ -43,7 +43,7 @@ function googleAuthController(req, reply) {
             });
             const accessToken = req.server.jwt.sign({ id: user.id, email: user.email }, { expiresIn: "5m" });
             const refreshToken = req.server.jwt.sign({ id: user.id, email: user.email }, { expiresIn: "30d" });
-            reply.redirect(`http://localhost:3000/auth/google/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+            reply.redirect(`${process.env.FRONTEND_URL}/auth/google/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`);
         }
         catch (error) {
             console.error(error);

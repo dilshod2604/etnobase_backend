@@ -183,23 +183,46 @@ export const handleLikeDislikeNews = async (
     reply.status(500).send({ message: "Ошибка при лайк/дизлайк новости" });
   }
 };
-// export const newsViews = async (req: FastifyRequest, reply: FastifyReply) => {
-//   const { userId, newsId } = req.body as {
-//     userId: number;
-//     newsId: number;
-//   };
-//   try {
-//     const [user, news] = await Promise.all([
-//       prisma.user.findFirst({ where: { id: userId } }),
-//       prisma.news.findFirst({ where: { id: newsId } }),
-//     ]);
-//     if (!user || !news) {
-//       return reply
-//         .status(404)
-//         .send({ message: "Пользователь или новость не найдены" });
-//     }
+export const newsViews = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { newsId, userId } = req.body as { userId: number; newsId: number };
 
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+  try {
+    const [userExists, newsExists] = await Promise.all([
+      prisma.user.count({ where: { id: userId } }),
+      prisma.news.count({ where: { id: newsId } }),
+    ]);
+
+    if (!userExists || !newsExists) {
+      return reply.status(404).send({
+        message: "Пользователь или новость не найдены",
+      });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.newsViews.upsert({
+        where: { userId_newsId: { userId, newsId } },
+        create: {
+          userId,
+          newsId,
+          views: 1,
+        },
+        update: {
+          views: { increment: 1 },
+        },
+      });
+
+      await tx.news.update({
+        where: { id: newsId },
+        data: { views: { increment: 1 } },
+      });
+    });
+
+    return reply.status(204).send();
+  } catch (error) {
+    console.error("News view tracking error:", error);
+    return reply.status(500).send({
+      message: "Ошибка при учете просмотра",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};

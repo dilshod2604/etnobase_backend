@@ -153,6 +153,9 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
                     },
                 },
                 replies: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
                     include: {
                         newsReplyLikes: true,
                         user: {
