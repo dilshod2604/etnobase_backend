@@ -126,7 +126,7 @@ exports.likeDislikeCommmentReply = likeDislikeCommmentReply;
 const fetchCommentReply = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { commentId, userId } = req.params;
     try {
-        const commentReply = yield prisma_1.prisma.newsComment.findMany({
+        const commentReply = yield prisma_1.prisma.newsComment.findFirst({
             where: {
                 id: commentId,
             },

@@ -136,7 +136,7 @@ export const fetchCommentReply = async (
     userId: number;
   };
   try {
-    const commentReply = await prisma.newsComment.findMany({
+    const commentReply = await prisma.newsComment.findFirst({
       where: {
         id: commentId,
       },
