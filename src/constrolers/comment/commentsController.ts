@@ -175,6 +175,9 @@ export const fetchNewsComments = async (
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     reply.status(200).send(comments);
   } catch (error) {

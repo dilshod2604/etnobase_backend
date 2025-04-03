@@ -166,6 +166,9 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
                     },
                 },
             },
+            orderBy: {
+                createdAt: "desc",
+            },
         });
         reply.status(200).send(comments);
     }
