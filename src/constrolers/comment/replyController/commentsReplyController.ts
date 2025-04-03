@@ -127,21 +127,32 @@ export const likeDislikeCommmentReply = async (
       .send({ message: "Ошибка при лайк/дизлайк комментария ответа" });
   }
 };
-export const fetchAllCommentsReply = async (
+export const fetchCommentReply = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
+  const { commentId, userId } = req.params as {
+    commentId: number;
+    userId: number;
+  };
   try {
-    const commentReply = await prisma.commentReply.findMany({
+    const commentReply = await prisma.newsComment.findMany({
+      where: {
+        id: commentId,
+      },
       include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+        replies: {
+          include: {
+            newsReplyLikes: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
-        newsReplyLikes: true,
       },
     });
     reply.status(200).send(commentReply);

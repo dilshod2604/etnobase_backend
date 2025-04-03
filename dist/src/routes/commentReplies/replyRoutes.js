@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const commentsReplyController_1 = require("./../../constrolers/comment/replyController/commentsReplyController");
 const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
-const commentsReplyController_1 = require("../../constrolers/comment/replyController/commentsReplyController");
+const commentsReplyController_2 = require("../../constrolers/comment/replyController/commentsReplyController");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.post("/commentreply", {
         schema: {
@@ -36,7 +37,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 },
             },
         },
-    }, commentsReplyController_1.addCommentReply);
+    }, commentsReplyController_2.addCommentReply);
     fastify.delete("/commentreply", {
         schema: {
             tags: ["commentReply"],
@@ -56,7 +57,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 },
             },
         },
-    }, commentsReplyController_1.deleteCommentReply);
+    }, commentsReplyController_2.deleteCommentReply);
     fastify.post("/commentreply/like", {
         schema: {
             tags: ["commentReply"],
@@ -70,10 +71,17 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
                 required: ["commentId", "userId", "reaction"],
             },
         },
-    }, commentsReplyController_1.likeDislikeCommmentReply);
-    fastify.get("/commentreply", {
+    }, commentsReplyController_2.likeDislikeCommmentReply);
+    fastify.get("/commentreply/:commentId", {
         schema: {
             tags: ["commentReply"],
+            params: {
+                type: "object",
+                properties: {
+                    commentId: { type: "number" },
+                },
+                required: ["commentId"],
+            },
         },
-    }, commentsReplyController_1.fetchAllCommentsReply);
+    }, commentsReplyController_1.fetchCommentReply);
 }));

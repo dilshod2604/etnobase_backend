@@ -1,10 +1,10 @@
+import { fetchCommentReply } from "./../../constrolers/comment/replyController/commentsReplyController";
 import { FastifyInstance } from "fastify";
 
 import fp from "fastify-plugin";
 import {
   addCommentReply,
   deleteCommentReply,
-  fetchAllCommentsReply,
   likeDislikeCommmentReply,
 } from "../../constrolers/comment/replyController/commentsReplyController";
 
@@ -78,12 +78,19 @@ export default fp(async (fastify: FastifyInstance) => {
     likeDislikeCommmentReply
   );
   fastify.get(
-    "/commentreply",
+    "/commentreply/:commentId",
     {
       schema: {
         tags: ["commentReply"],
+        params: {
+          type: "object",
+          properties: {
+            commentId: { type: "number" },
+          },
+          required: ["commentId"],
+        },
       },
     },
-    fetchAllCommentsReply
+    fetchCommentReply
   );
 });

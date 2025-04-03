@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchAllCommentsReply = exports.likeDislikeCommmentReply = exports.deleteCommentReply = exports.addCommentReply = void 0;
+exports.fetchCommentReply = exports.likeDislikeCommmentReply = exports.deleteCommentReply = exports.addCommentReply = void 0;
 const prisma_1 = require("../../../utils/prisma");
 const addCommentReply = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { commentId, userId, text } = req.body;
@@ -123,18 +123,26 @@ const likeDislikeCommmentReply = (req, reply) => __awaiter(void 0, void 0, void 
     }
 });
 exports.likeDislikeCommmentReply = likeDislikeCommmentReply;
-const fetchAllCommentsReply = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchCommentReply = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    const { commentId, userId } = req.params;
     try {
-        const commentReply = yield prisma_1.prisma.commentReply.findMany({
+        const commentReply = yield prisma_1.prisma.newsComment.findMany({
+            where: {
+                id: commentId,
+            },
             include: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
+                replies: {
+                    include: {
+                        newsReplyLikes: true,
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                            },
+                        },
                     },
                 },
-                newsReplyLikes: true,
             },
         });
         reply.status(200).send(commentReply);
@@ -146,4 +154,4 @@ const fetchAllCommentsReply = (req, reply) => __awaiter(void 0, void 0, void 0, 
             .send({ message: "Ошибка при получении всех комментариев ответов" });
     }
 });
-exports.fetchAllCommentsReply = fetchAllCommentsReply;
+exports.fetchCommentReply = fetchCommentReply;
