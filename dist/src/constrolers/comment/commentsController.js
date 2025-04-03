@@ -154,12 +154,7 @@ const fetchNewsComments = (req, reply) => __awaiter(void 0, void 0, void 0, func
                 },
                 replies: {
                     include: {
-                        newsReplyLikes: {
-                            select: {
-                                isDislike: true,
-                                isLike: true,
-                            },
-                        },
+                        newsReplyLikes: true,
                         user: {
                             select: {
                                 id: true,
