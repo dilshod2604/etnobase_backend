@@ -5,7 +5,7 @@ import { FastifyInstance } from "fastify";
 export default fp(async (fastify: FastifyInstance) => {
   fastify.register(fastifyMultipart, {
     limits:{
-        fileSize:5*1024*1024
+        fileSize:50*1024*1024
     }
   });
 });

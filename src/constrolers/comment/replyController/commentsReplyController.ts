@@ -131,26 +131,22 @@ export const fetchCommentReply = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
-  const { commentId, userId } = req.params as {
+  const { commentId } = req.params as {
     commentId: number;
-    userId: number;
   };
   try {
-    const commentReply = await prisma.newsComment.findFirst({
+    const commentReply = await prisma.commentReply.findMany({
       where: {
-        id: commentId,
+        commentId,
       },
       include: {
-        replies: {
-          include: {
-            newsReplyLikes: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
+        newsReplyLikes: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
           },
         },
       },

@@ -17,7 +17,7 @@ const multipart_1 = __importDefault(require("@fastify/multipart"));
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.register(multipart_1.default, {
         limits: {
-            fileSize: 5 * 1024 * 1024
+            fileSize: 50 * 1024 * 1024
         }
     });
 }));

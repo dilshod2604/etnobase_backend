@@ -124,23 +124,20 @@ const likeDislikeCommmentReply = (req, reply) => __awaiter(void 0, void 0, void 
 });
 exports.likeDislikeCommmentReply = likeDislikeCommmentReply;
 const fetchCommentReply = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { commentId, userId } = req.params;
+    const { commentId } = req.params;
     try {
-        const commentReply = yield prisma_1.prisma.newsComment.findFirst({
+        const commentReply = yield prisma_1.prisma.commentReply.findMany({
             where: {
-                id: commentId,
+                commentId,
             },
             include: {
-                replies: {
-                    include: {
-                        newsReplyLikes: true,
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                            },
-                        },
+                newsReplyLikes: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatar: true,
                     },
                 },
             },
