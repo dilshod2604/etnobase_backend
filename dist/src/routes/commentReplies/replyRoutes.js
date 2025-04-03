@@ -16,7 +16,7 @@ const commentsReplyController_1 = require("./../../constrolers/comment/replyCont
 const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
 const commentsReplyController_2 = require("../../constrolers/comment/replyController/commentsReplyController");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
-    fastify.post("/commentreply", {
+    fastify.post("/comment/reply", {
         schema: {
             tags: ["commentReply"],
             body: {
@@ -38,7 +38,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsReplyController_2.addCommentReply);
-    fastify.delete("/commentreply", {
+    fastify.delete("/comment/reply", {
         schema: {
             tags: ["commentReply"],
             body: {
@@ -58,7 +58,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsReplyController_2.deleteCommentReply);
-    fastify.post("/commentreply/like", {
+    fastify.post("/comment/reply/like", {
         schema: {
             tags: ["commentReply"],
             body: {
@@ -72,7 +72,7 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, commentsReplyController_2.likeDislikeCommmentReply);
-    fastify.get("/commentreply/:commentId", {
+    fastify.get("/comment/reply/:commentId", {
         schema: {
             tags: ["commentReply"],
             params: {

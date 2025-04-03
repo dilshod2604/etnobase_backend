@@ -10,7 +10,7 @@ import {
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
-    "/commentreply",
+    "/comment/reply",
     {
       schema: {
         tags: ["commentReply"],
@@ -36,7 +36,7 @@ export default fp(async (fastify: FastifyInstance) => {
     addCommentReply
   );
   fastify.delete(
-    "/commentreply",
+    "/comment/reply",
     {
       schema: {
         tags: ["commentReply"],
@@ -60,7 +60,7 @@ export default fp(async (fastify: FastifyInstance) => {
     deleteCommentReply
   );
   fastify.post(
-    "/commentreply/like",
+    "/comment/reply/like",
     {
       schema: {
         tags: ["commentReply"],
@@ -78,7 +78,7 @@ export default fp(async (fastify: FastifyInstance) => {
     likeDislikeCommmentReply
   );
   fastify.get(
-    "/commentreply/:commentId",
+    "/comment/reply/:commentId",
     {
       schema: {
         tags: ["commentReply"],
