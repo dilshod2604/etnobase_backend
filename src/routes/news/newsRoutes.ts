@@ -166,16 +166,15 @@ export default fp(async (fastify: FastifyInstance) => {
     addSocialMedia
   );
   fastify.delete(
-    "/news/social-media",
+    "/news/social-media/:id",
     {
       schema: {
-        body: {
+        params: {
           type: "object",
           properties: {
             id: { type: "number" },
-            newsId: { type: "number" },
           },
-          required: ["newsId", "id"],
+          required: ["id"],
         },
         response: {
           201: {

@@ -30,16 +30,14 @@ export const deleteSocialMedia = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
-  const { id, newsId } = req.body as {
+  const { id } = req.params as {
     id: number;
-    newsId: number;
   };
 
   try {
     await prisma.newsSocialmedia.delete({
       where: {
         id,
-        newsId,
       },
     });
     reply.status(201).send({ message: "Социальная сеть успешно удалена" });

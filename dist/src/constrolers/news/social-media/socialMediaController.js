@@ -30,12 +30,11 @@ const addSocialMedia = (req, reply) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.addSocialMedia = addSocialMedia;
 const deleteSocialMedia = (req, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, newsId } = req.body;
+    const { id } = req.params;
     try {
         yield prisma_1.prisma.newsSocialmedia.delete({
             where: {
                 id,
-                newsId,
             },
         });
         reply.status(201).send({ message: "Социальная сеть успешно удалена" });

@@ -134,15 +134,14 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, socialMediaController_1.addSocialMedia);
-    fastify.delete("/news/social-media", {
+    fastify.delete("/news/social-media/:id", {
         schema: {
-            body: {
+            params: {
                 type: "object",
                 properties: {
                     id: { type: "number" },
-                    newsId: { type: "number" },
                 },
-                required: ["newsId", "id"],
+                required: ["id"],
             },
             response: {
                 201: {
