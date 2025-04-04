@@ -162,18 +162,20 @@ model PasswordResetCode {
 }
 
 model News {
-  id          Int           @id @default(autoincrement())
-  title       String        @db.Text
-  description String        @db.Text
-  poster      String?       @db.VarChar(255)
-  sourceNews  String?       @db.VarChar(255)
-  createdAt   DateTime      @default(now())
-  dislikes    Int           @default(0)
-  likes       Int           @default(0)
-  views       Int           @default(0)
-  comments    NewsComment[]
-  newsLikes   NewsLikes[]
-  newsViews   NewsViews[]
+  id              Int               @id @default(autoincrement())
+  title           String            @db.Text
+  description     String            @db.Text
+  poster          String?           @db.VarChar(255)
+  sourceNews      String?           @db.VarChar(255)
+  createdAt       DateTime          @default(now())
+  dislikes        Int               @default(0)
+  likes           Int               @default(0)
+  views           Int               @default(0)
+  phoneNumber     String?           @db.VarChar(255)
+  comments        NewsComment[]
+  newsLikes       NewsLikes[]
+  socialMedia NewsSocialmedia[]
+  newsViews       NewsViews[]
 }
 
 model FAQ {
@@ -256,6 +258,18 @@ model CommentReply {
 
   @@index([commentId], map: "CommentReply_commentId_fkey")
   @@index([userId], map: "CommentReply_userId_fkey")
+}
+
+model NewsSocialmedia {
+  id        Int      @id @default(autoincrement())
+  newsId    Int
+  name      String   @db.VarChar(255)
+  link      String   @db.Text
+  craetedAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  News      News     @relation(fields: [newsId], references: [id], onDelete: Cascade, map: "NewsSocialmedia_ibfk_1")
+
+  @@index([newsId], map: "newsId")
 }
 
 enum PersonRole {

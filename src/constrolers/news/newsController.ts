@@ -87,6 +87,9 @@ export const fetchNewsById = async (
   try {
     const news = await prisma.news.findFirst({
       where: { id: parseInt(id) },
+      include: {
+        socialMedia: true,
+      },
     });
     if (!news) {
       reply.status(404).send({ message: "Новость не найдена" });

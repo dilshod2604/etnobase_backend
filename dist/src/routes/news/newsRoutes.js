@@ -16,6 +16,7 @@ const fastify_plugin_1 = __importDefault(require("fastify-plugin"));
 const newsController_1 = require("../../constrolers/news/newsController");
 const newsSchema_1 = require("../../schemas/news/newsSchema");
 const uploadAwatar_1 = require("../../constrolers/person/uploadAwatar");
+const socialMediaController_1 = require("../../constrolers/news/social-media/socialMediaController");
 exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, void 0, void 0, function* () {
     fastify.post("/news", {
         schema: {
@@ -112,4 +113,45 @@ exports.default = (0, fastify_plugin_1.default)((fastify) => __awaiter(void 0, v
             },
         },
     }, newsController_1.newsViews);
+    fastify.post("/news/social-media", {
+        schema: {
+            body: {
+                type: "object",
+                properties: {
+                    newsId: { type: "number" },
+                    name: { type: "string" },
+                    link: { type: "string" },
+                },
+                required: ["newsId", "name", "link"],
+            },
+            response: {
+                201: {
+                    type: "object",
+                    properties: {
+                        message: { type: "string" },
+                    },
+                },
+            },
+        },
+    }, socialMediaController_1.addSocialMedia);
+    fastify.delete("/news/social-media", {
+        schema: {
+            body: {
+                type: "object",
+                properties: {
+                    id: { type: "number" },
+                    newsId: { type: "number" },
+                },
+                required: ["newsId", "id"],
+            },
+            response: {
+                201: {
+                    type: "object",
+                    properties: {
+                        message: { type: "string" },
+                    },
+                },
+            },
+        },
+    }, socialMediaController_1.deleteSocialMedia);
 }));

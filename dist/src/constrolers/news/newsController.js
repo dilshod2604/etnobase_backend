@@ -84,6 +84,9 @@ const fetchNewsById = (req, reply) => __awaiter(void 0, void 0, void 0, function
     try {
         const news = yield prisma_1.prisma.news.findFirst({
             where: { id: parseInt(id) },
+            include: {
+                socialMedia: true,
+            },
         });
         if (!news) {
             reply.status(404).send({ message: "Новость не найдена" });

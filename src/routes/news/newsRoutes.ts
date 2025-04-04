@@ -11,6 +11,10 @@ import {
 } from "../../constrolers/news/newsController";
 import { $ref } from "../../schemas/news/newsSchema";
 import { uploadAwatar } from "../../constrolers/person/uploadAwatar";
+import {
+  addSocialMedia,
+  deleteSocialMedia,
+} from "../../constrolers/news/social-media/socialMediaController";
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.post(
@@ -135,5 +139,54 @@ export default fp(async (fastify: FastifyInstance) => {
       },
     },
     newsViews
+  );
+  fastify.post(
+    "/news/social-media",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            newsId: { type: "number" },
+            name: { type: "string" },
+            link: { type: "string" },
+          },
+          required: ["newsId", "name", "link"],
+        },
+        response: {
+          201: {
+            type: "object",
+            properties: {
+              message: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    addSocialMedia
+  );
+  fastify.delete(
+    "/news/social-media",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            id: { type: "number" },
+            newsId: { type: "number" },
+          },
+          required: ["newsId", "id"],
+        },
+        response: {
+          201: {
+            type: "object",
+            properties: {
+              message: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    deleteSocialMedia
   );
 });
