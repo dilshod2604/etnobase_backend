@@ -7,6 +7,7 @@ const newsSchema = z.object({
   description: z.string(),
   poster: z.string().optional().nullable(),
   sourceNews: z.string().optional().nullable(),
+  phoneNumber:z.string().optional().nullable(),
   createdAt: z.date(),
 });
 

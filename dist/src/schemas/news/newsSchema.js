@@ -10,6 +10,7 @@ const newsSchema = zod_1.z.object({
     description: zod_1.z.string(),
     poster: zod_1.z.string().optional().nullable(),
     sourceNews: zod_1.z.string().optional().nullable(),
+    phoneNumber: zod_1.z.string().optional().nullable(),
     createdAt: zod_1.z.date(),
 });
 const createNewsSchema = newsSchema.omit({ id: true, createdAt: true });
