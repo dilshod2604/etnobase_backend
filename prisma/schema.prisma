@@ -163,8 +163,8 @@ model PasswordResetCode {
 
 model News {
   id          Int           @id @default(autoincrement())
-  title       String        @db.VarChar(255)
-  description String        @db.VarChar(255)
+  title       String        @db.Text
+  description String        @db.Text
   poster      String?       @db.VarChar(255)
   sourceNews  String?       @db.VarChar(255)
   createdAt   DateTime      @default(now())
@@ -191,7 +191,7 @@ model NewsComment {
   dislikes        Int               @default(0)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime?         @db.DateTime(0)
-  replies         CommentReply[]  @relation("CommentToReplies") 
+  replies         CommentReply[]    @relation("CommentToReplies")
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_1")
   news            News              @relation(fields: [newsId], references: [id], onDelete: Cascade, map: "NewsComment_ibfk_2")
   newsCommentLike NewsCommentLike[]
@@ -203,17 +203,17 @@ model NewsComment {
 model NewsCommentLike {
   userId      Int
   commentId   Int?
+  isLike      Boolean       @default(false)
+  id          Int           @id @default(autoincrement())
+  isDislike   Boolean       @default(false)
   replyId     Int?
-  isLike      Boolean     @default(false)
-  isDislike   Boolean     @default(false)
-  id          Int         @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  newsComment NewsComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  replies CommentReply? @relation(fields: [replyId],references: [id] ,onDelete: Cascade,name:"ReplyLikes")
+  newsComment NewsComment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  replies     CommentReply? @relation("ReplyLikes", fields: [replyId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, commentId], name: "user_comment_unique") 
+  @@unique([userId, commentId], name: "user_comment_unique")
   @@unique([userId, replyId], name: "user_reply_unique")
-  @@index([replyId],map:"NewsCommentReplyLike_ibfk_2")
+  @@index([replyId], map: "NewsCommentReplyLike_ibfk_2")
   @@index([commentId], map: "NewsCommentLike_ibfk_2")
 }
 
@@ -225,6 +225,7 @@ model NewsLikes {
   isDislike Boolean @default(false)
   news      News    @relation(fields: [newsId], references: [id], onDelete: Cascade)
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, newsId], map: "NewsLike_user_news_unique")
   @@index([newsId], map: "NewsLikes_ibfk_2")
 }
@@ -242,19 +243,19 @@ model NewsViews {
 }
 
 model CommentReply {
-  id          Int         @id @default(autoincrement())
-  userId      Int
-  commentId   Int
-  text        String      @db.Text
-  likes       Int         @default(0)
-  dislikes    Int         @default(0)
-  newsReplyLikes NewsCommentLike[]   @relation("ReplyLikes")
-  createdAt   DateTime    @default(now()) @db.DateTime(0)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  newsComment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade,name:"CommentToReplies")
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  commentId      Int
+  text           String            @db.Text
+  likes          Int               @default(0)
+  dislikes       Int               @default(0)
+  createdAt      DateTime          @default(now()) @db.DateTime(0)
+  newsComment    NewsComment       @relation("CommentToReplies", fields: [commentId], references: [id], onDelete: Cascade)
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsReplyLikes NewsCommentLike[] @relation("ReplyLikes")
 
-  @@index([commentId], map: "commentId")
-  @@index([userId], map: "userId")
+  @@index([commentId], map: "CommentReply_commentId_fkey")
+  @@index([userId], map: "CommentReply_userId_fkey")
 }
 
 enum PersonRole {
